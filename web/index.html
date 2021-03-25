@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>12任务平台</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="../plugin/layui/css/layui.css">
+
+    <script src="../static/js/jquery-3.2.1.js"></script>
+    <script src="../plugin/layui/layui.js" charset="utf-8"></script>
+
+</head>
+<body >
+
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">12任务平台</div>
+
+        <!--上方导航栏-->
+        <ul class="layui-nav layui-layout-left" id="topMenus">
+            <li class="layui-nav-item"><a href="#/task">任务管理</a></li>
+            <li class="layui-nav-item"><a href="#/role">角色管理</a></li>
+            <li class="layui-nav-item"><a href="#/setUp">基本设置</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">退出</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-body" id="result">
+
+
+
+    </div>
+
+
+    <div class="layui-footer" style="text-align:center;">
+        <!-- 底部固定区域 -->
+        © 12任务平台
+    </div>
+</div>
+
+
+<script>
+
+    var R = new Router();
+    R.init();
+    var res = document.getElementById('result');
+
+    R.route('/task', function() {
+        // res.style.background = 'blue';
+        res.innerHTML = '任务大厅';
+    });
+    R.route('/role', function() {
+        // res.style.background = 'orange';
+        res.innerHTML = '角色管理';
+    });
+    R.route('/setUp', function() {
+        // res.style.background = 'black';
+        res.innerHTML = '基本设置';
+    });
+
+
+
+    function Router(){
+        this.routes = {};
+        this.curUrl = '';
+
+        this.route = function(path, callback){
+            this.routes[path] = callback || function(){};
+        };
+
+        this.refresh = function(){
+            this.curUrl = location.hash.slice(1) || '/';
+            this.routes[this.curUrl]();
+        };
+
+        this.init = function(){
+            window.addEventListener('load', this.refresh.bind(this), false);
+            window.addEventListener('hashchange', this.refresh.bind(this), false);
+        }
+    }
+</script>
+
+
+
+</body>
+</html>

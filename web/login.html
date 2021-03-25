@@ -1,79 +1,78 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>12任务平台</title>
+    <meta charset="UTF-8">
+    <title>12任务平台</title>
+    <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico"/>
 
-	<link rel="stylesheet" href="../static/css/login/reset.min.css">
-	<link rel="stylesheet" href="../static/css/login/style.css">
-
+    <link rel="stylesheet" href="../static/css/login/reset.min.css">
+    <link rel="stylesheet" href="../static/css/login/style.css">
     <link rel="stylesheet" href="../plugin/layui/css/layui.css">
-
 
 
 </head>
 <body>
 
 <div class="container">
-	<div class="panel">
-		<div class="panel-header">
-			<h1>12任务平台</h1>
-		</div>
+    <div class="panel">
+        <div class="panel-header">
+            <h1>12任务平台</h1>
+        </div>
 
-		<form class="layui-form" action="">
-			<div class="layui-form-item">
-				<label class="layui-form-label">账号</label>
-				<div class="layui-input-block">
-					<input type="text" name="username"  placeholder="请输入标题" value="" required lay-verify="required" autocomplete="off" class="layui-input" >
-				</div>
-			</div>
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">账号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" placeholder="请输入标题" value="" required lay-verify="required"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">密码</label>
                 <div class="layui-input-block">
-                    <input type="password" name="password" placeholder="请输入密码"  value="" required lay-verify="required" autocomplete="off" class="layui-input">
+                    <input type="password" name="password" placeholder="请输入密码" value="" required lay-verify="required"
+                           autocomplete="off" class="layui-input">
                 </div>
             </div>
 
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 90px;">滑动验证</label>
-				<div class="layui-input-block">
-					<div id="slider"></div>
-				</div>
-			</div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 90px;">滑动验证</label>
+                <div class="layui-input-block">
+                    <div id="slider"></div>
+                </div>
+            </div>
 
-			<div class="layui-form-item">
-				<div class="layui-input-block">
-					<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-				</div>
-			</div>
-		</form>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                </div>
+            </div>
+        </form>
 
 
-
-		<!--<div class="panel-footer">-->
-			<!--<p class="panel-footer-info">忘记密码？ <a href="#" class="link">找回密码</a></p>-->
-		<!--</div>-->
-	</div>
+        <!--<div class="panel-footer">-->
+        <!--<p class="panel-footer-info">忘记密码？ <a href="#" class="link">找回密码</a></p>-->
+        <!--</div>-->
+    </div>
 </div>
 
 <script src="../plugin/layui/layui.js"></script>
 
-<script src="../plugin/require/require.js" data-main="../static/lib/main.js"></script>
 
 <script type="text/javascript" charset="utf-8">
 
     layui.config({
         base: '../plugin/dist/sliderVerify/'
-    }).use(['sliderVerify', 'jquery', 'form'], function() {
+    }).use(['sliderVerify', 'jquery', 'form'], function () {
         var sliderVerify = layui.sliderVerify,
             $ = layui.jquery,
             form = layui.form;
 
         var slider = sliderVerify.render({
             elem: '#slider',
-            onOk: function(){//当验证通过回调
-                layer.msg("滑块验证通过");
+            onOk: function () {//当验证通过回调
+                // layer.msg("滑块验证通过");
             }
         });
 
@@ -82,26 +81,25 @@
         // });
 
         //监听提交
-        form.on('submit(formDemo)', function(data) {
-            if(slider.isOk()){
+        form.on('submit(formDemo)', function (data) {
+            if (slider.isOk()) {
 
-                var username = $("#username").val();
-                var password = $("#password").val();
-
+                var json = data.field;
                 var index = layer.load(1);
 
                 $.ajax({
                     type: "POST",
-                    url: "/loan/loan_from_bank",
+                    url: "http://localhost/api/login",
                     data: {
-                        "username": username,
-                        "password": password,
+                        "userName": json.username,
+                        "password": json.password
                     },
                     dataType: "json",
                     beforeSend: function () {
                         // var index = layer.load(1);
                     },
                     success: function (data) {
+
                         console.log(data);
 
                     }, error: function () {
@@ -112,16 +110,14 @@
                     }
                 });
 
-                layer.msg(JSON.stringify(data.field));
-            }else{
+                // layer.msg(JSON.stringify(data.field));
+            } else {
                 layer.msg("请先通过滑块验证");
             }
             return false;
         });
     })
 </script>
-
-
 
 
 </body>
