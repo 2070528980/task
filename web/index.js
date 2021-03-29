@@ -1,44 +1,25 @@
+layui.config({
+    base: '../plugin/layrouter/layui_exts/',
+    // version: new Date().valueOf()
+}).extend({
+    layrouter: 'layrouter/layrouter'
+}).use(['layrouter', 'layer', 'element'], function() {
+    var layrouter = layui.layrouter;
+    var layer = layui.layer;
+    var element = layui.element;
 
-// 路由
+    // 注册一些路由
+    layrouter.register('/task', function() {
+        $("#result").load("task/EditTask.html");
+    });
+    layrouter.register('/role', function() {
+        $("#result").load("test/test1.html");
+    });
+    layrouter.register('/setUp', function() {
+        $("#result").load("test/test2.html");
+    });
 
-var R = new Router();
-R.init();
-
-R.route('/task', function () {
-
-    $("#result").load("task/EditTask.html");
-
+    // 初始化
+    // 监听 hash 事件
+    layrouter.init();
 });
-R.route('/role', function () {
-
-    $("#result").load("test1");
-
-});
-R.route('/setUp', function () {
-
-    $("#result").load("test2");
-
-});
-
-
-function Router() {
-    this.routes = {};
-    this.curUrl = '';
-
-    this.route = function (path, callback) {
-        this.routes[path] = callback || function () {
-        };
-    };
-
-    this.refresh = function () {
-        this.curUrl = location.hash.slice(1) || '/';
-        this.routes[this.curUrl]();
-    };
-
-    this.init = function () {
-        window.addEventListener('load', this.refresh.bind(this), false);
-        window.addEventListener('hashchange', this.refresh.bind(this), false);
-    };
-}
-
-

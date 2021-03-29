@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>layrouter</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" media="all">
+</head>
+
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">Layrouter Example</div>
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">其它系统</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">子系统1</a></dd>
+                        <dd><a href="javascript:;">子系统2</a></dd>
+                        <dd><a href="javascript:;">子系统3</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <ul class="layui-nav layui-nav-tree">
+                    <li class="layui-nav-item"><a href="#console">控制面板</a></li>
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="" href="javascript:;">系统管理</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="#user">用户管理</a></dd>
+                            <dd><a href="#role">角色管理</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item"><a href="#about">关于</a></li>
+                    <li class="layui-nav-item"><a href="https://gitee.com/taadis/layrouter" target="_blank">我在这里</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body">
+            <div style="padding: 15px;" id="LAY_APP">
+                <!-- 内容块 -->
+            </div>
+        </div>
+
+        <div class="layui-footer">
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://www.layuicdn.com/layui-v2.5.6/layui.js"></script>
+    <script type="text/javascript">
+        layui.config({
+            base: 'layui_exts/',
+            version: new Date().valueOf()
+        }).extend({
+            layrouter: 'layrouter/layrouter'
+        }).use(['layrouter', 'layer', 'element'], function() {
+            var layrouter = layui.layrouter;
+            var layer = layui.layer;
+            var element = layui.element;
+            var layApp = document.getElementById('LAY_APP');
+
+            // 注册一些路由
+            layrouter.register('console', function() {
+                layApp.innerHTML = '<i class="layui-icon layui-icon-face-smile"> 控制面板 </i>'
+            });
+            layrouter.register('user', function() {
+                layApp.innerText = '用户管理';
+            });
+            layrouter.register('role', function() {
+                layApp.innerText = '角色管理';
+            });
+            layrouter.register('about', function() {
+                layApp.innerText = 'layrouter: 举个栗子, 为自己带盐.';
+            });
+
+            // 初始化
+            // 监听 hash 事件
+            layrouter.init();
+        });
+    </script>
+</body>
+
+</html>
