@@ -1,8 +1,17 @@
 
+<div class="content" >
 
-<div class="content">
+    <div class="breadcrumb">
+        <span class="layui-breadcrumb" >
+          <a href="javascript:;">首页</a>
+            <span lay-separator="">/</span>
+          <a href="javascript:;">用户管理</a>
+            <span lay-separator="">/</span>
+          <a><cite>会员用户列表</cite></a>
+        </span>
+    </div>
 
-    <div class="douruimi-form edit-goods">
+    <div class="douruimi-form edit-goods" style=" overflow-y: auto;height:auto;">
         <form class="layui-form" action="">
 
             <div class="layui-form-item">
@@ -31,11 +40,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">项目步骤</label>
                 <div class="layui-input-inline" style="width:800px">
-
-                    <script id="container" name="content" type="text/plain"></script>
-                    <textarea id="ueditorContent" style="display:none" name="project"></textarea>
-
-
+                    <textarea name="" id="ueditorContent"></textarea>
                 </div>
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
@@ -46,15 +51,26 @@
                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                 </div>
             </div>
-
-
-
         </form>
-
-
-
     </div>
-
-
-
 </div>
+
+<script>
+
+    layui.extend({
+        tinymce: '../../../plugin/layui-tinymce/layui_exts/tinymce/tinymce'
+    }).use(['tinymce', 'util', 'layer'], function () {
+        var t = layui.tinymce;
+
+        t.render({
+            elem: "#ueditorContent"
+            , height: 400
+            // ...
+            // 其余配置可参考官方文档
+        }, function (opt) {
+            //加载完成后回调
+        });
+
+
+    });
+</script>

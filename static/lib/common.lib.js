@@ -56,7 +56,7 @@ define([
     var apiUrl = "";
     if('http:' == getProtocol()){
         apiUrl = "http://localhost:8081/";
-        console.log(apiUrl)
+        // console.log(apiUrl)
     } else if('https:' == getProtocol()){
         apiUrl = getProtocol()+"//" + window.location.host + ":" +window.location.port + "/";
         console.log(apiUrl)
