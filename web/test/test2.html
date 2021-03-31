@@ -3,9 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="../../plugin/layui/layui.all.js"></script>
+    <link rel="stylesheet" href="../../plugin/layui/css/layui.css">
 </head>
 <body>
 <h1>test2</h1>
+<div id="test2"></div>
+
+<script>
+
+    layui.use(['rate'], function () {
+        var rate = layui.rate;
+        //显示文字
+        rate.render({
+            elem: '#test2'
+            , value: 2 //初始值
+            , text: true //开启文本
+        });
+
+    });
+
+</script>
 
 </body>
 </html>

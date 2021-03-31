@@ -66,7 +66,6 @@ define([
     cms.info('apiUrl = ' + apiUrl);
 
 
-
     cms.baseRequest = function (method, cb, data) {
         data = data || {};
         var url = data._url;

@@ -7,7 +7,6 @@ var options = {
           'jquery': '../../plugin/jquery/jquery-1.10.2.min',
           'layer': '../../plugin/layui/layui.all',
          'index': '../../web/index',
-          'core': 'common.lib'
     }
 };
 
@@ -15,7 +14,7 @@ var options = {
 window.require.config(options);
 
 // 这里必须加上才会调用js,加上index才会访问index文件
-window.require(["jquery","layer","index","core"],function($,layui,inde,core){
+window.require(["jquery","layer","index"],function($,layui,inde){
         // console.log(core.getRootUrl());
 });
 

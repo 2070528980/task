@@ -45,7 +45,7 @@
 
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">登录</button>
                 </div>
             </div>
         </form>
@@ -99,6 +99,15 @@
                         // var index = layer.load(1);
                     },
                     success: function (data) {
+
+                        if(data.code=="000"){
+                            layer.msg(data.msg);
+                            setTimeout(function() {
+                                window.location.href = "/taskPlatform-web/web/index.html";
+                            }, 1000);
+                        }else {
+                            layer.msg(data.msg);
+                        }
 
                         console.log(data);
 

@@ -1,30 +1,31 @@
-
-<div class="content" >
+<div class="content">
 
     <div class="breadcrumb">
-        <span class="layui-breadcrumb" >
+        <span class="layui-breadcrumb">
           <a href="javascript:;">首页</a>
             <span lay-separator="">/</span>
-          <a href="javascript:;" >用户管理</a>
+          <a href="javascript:;">用户管理</a>
             <span lay-separator="">/</span>
           <a><cite>会员用户列表</cite></a>
         </span>
     </div>
 
     <div class="douruimi-form edit-goods" style=" overflow-y: auto;height:700px;">
-        <form class="layui-form" action="">
+        <form class="layui-form" action="javascript:;">
 
             <div class="layui-form-item">
                 <label class="layui-form-label"><span class="input-must">*</span>项目名称</label>
                 <div class="layui-input-inline">
-                    <input type="text" maxlength="100" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" name="projectName">
+                    <input type="text" maxlength="100" lay-verify="required" autocomplete="off" placeholder=""
+                           class="layui-input" name="projectName">
                 </div>
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label"><span class="input-must">*</span>项目简介</label>
                 <div class="layui-input-inline">
-                    <input type="text" maxlength="100" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" name="projectIntroduce">
+                    <input type="text" maxlength="100" lay-verify="required" autocomplete="off" placeholder=""
+                           class="layui-input" name="projectIntroduce">
                 </div>
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
@@ -32,22 +33,37 @@
             <div class="layui-form-item">
                 <label class="layui-form-label"><span class="input-must">*</span>项目标签</label>
                 <div class="layui-input-inline">
-                    <input type="text"  maxlength="50"  lay-verify="required" autocomplete="off" placeholder="" class="layui-input" name="projectLabel">
+                    <input type="text" maxlength="50" lay-verify="required" autocomplete="off" placeholder=""
+                           class="layui-input" name="projectLabel">
                 </div>
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label"><span class="input-must">*</span>推荐指数</label>
+                <div class="layui-input-inline">
+                    <select name="opinionType1" id="opinionType1" lay-verify="required">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+
 
             <div class="layui-form-item">
                 <label class="layui-form-label">项目步骤</label>
                 <div class="layui-input-inline" style="width:800px">
-                    <textarea name="" id="ueditorContent"></textarea>
+                    <textarea name="ueditorContent" id="ueditorContent"></textarea>
                 </div>
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
 
             <div class="layui-form-item">
-                <div class="layui-input-block" >
-                    <button class="layui-btn" lay-filter="save" lay-submit="" >保存</button>
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-filter="save" lay-submit="">保存</button>
                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                 </div>
             </div>
@@ -57,32 +73,73 @@
 
 <script>
 
+
     layui.extend({
         tinymce: '../../../plugin/layui-tinymce/layui_exts/tinymce/tinymce'
-    }).use(['tinymce', 'util', 'layer','form'], function () {
+    }).use(['tinymce', 'util', 'layer', 'form'], function () {
         var t = layui.tinymce;
         var form = layui.form;
         var RichID = "#ueditorContent";
 
+        var APIUrl = getAPIUrl();
+
         t.render({
             elem: RichID
             , height: 400
-            // ...
             // 其余配置可参考官方文档
         }, function (opt) {
             //加载完成后回调
         });
 
+
+        console.log(getAPIUrl());
+
+
         form.on('submit(save)', function (data) {
 
-            // var text = t.get(RichID).getContent({format:'text'})
-            // layer.alert(text);
+            var ueditorContent = t.get(RichID).getContent();
 
-            var content = t.get(RichID).getContent()
-            layer.alert(content)
+            var formJson = data.field;
+            console.log(ueditorContent.length);
 
-            return false;
+            if (ueditorContent.length == 0) {
+                layer.msg("请输入项目步骤");
+                return false;
+            }
 
+
+            formJson.ueditorContent = ueditorContent;
+            console.log(JSON.stringify(formJson));
+
+            var index = layer.load(1);
+
+            $.ajax({
+                type: "POST",
+                url: APIUrl + "api/index/task/save",
+                data: {
+                    "jsonStr": JSON.stringify(formJson)
+                },
+                dataType: "json",
+                success: function (data) {
+
+                    if (data.code == 0) {
+                        layer.msg(data.msg);
+                        setTimeout(function () {
+                            window.location.href = "/taskPlatform-web/web/login.html";
+                        }, 1000);
+                    } else {
+                        console.log(data);
+                        layer.msg('操作成功');
+                    }
+                }
+                , error() {
+                    layer.msg('error');
+                }
+                , complete: function () {
+                    layer.close(index);
+
+                }
+            });
         });
 
 
