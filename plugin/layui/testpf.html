@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="css/layui.css">
+</head>
+<body>
+
+<div id="test2"></div>
+
+<script src="layui.js"></script>
+
+<script>
+
+    layui.use(['rate'], function(){
+        var rate = layui.rate;
+        //基础效果
+
+        //显示文字
+        rate.render({
+            elem: '#test2'
+            ,value: 2 //初始值
+            ,text: true //开启文本
+        });
+
+    });
+
+</script>
+</body>
+</html>

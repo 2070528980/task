@@ -1,5 +1,4 @@
-
-define(['require' , 'jquery' , 'layer' ], function (require, $, layer) {
+define(['require', 'jquery', 'layer'], function (require, $, layer) {
     //加载依赖js,
     layui.config({
         base: '../plugin/layrouter/layui_exts/',
@@ -26,5 +25,31 @@ define(['require' , 'jquery' , 'layer' ], function (require, $, layer) {
         // 监听 hash 事件
         layrouter.init();
     });
+
+    function logout() {
+
+        var index = layer.load(1);
+        $.ajax({
+            type: "POST",
+            url: APIUrl + "api/login/logout",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                setTimeout(function () {
+                    window.location.href = "/taskPlatform-web/web/login.html";
+                }, 1000);
+            }
+            , error() {
+                layer.msg('请检查网络设置，再重试');
+            }
+            , complete: function () {
+                layer.close(index);
+
+            }
+        });
+
+    }
+
 
 });

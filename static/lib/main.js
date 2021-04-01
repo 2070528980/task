@@ -5,7 +5,7 @@
 var options = {
     paths: { // 配置加载路径
           'jquery': '../../plugin/jquery/jquery-1.10.2.min',
-          'layer': '../../plugin/layui/layui.all',
+          'layer': '../../plugin/layui/layui',
          'index': '../../web/index',
     }
 };
