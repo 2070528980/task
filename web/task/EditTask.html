@@ -88,6 +88,9 @@
         t.render({
             elem: RichID
             , height: 400
+            ,images_upload_url:""   //上传地址
+            ,automatic_uploads: false   //加上了就不上传
+
             // 其余配置可参考官方文档
         }, function (opt) {
             //加载完成后回调
@@ -100,6 +103,9 @@
         form.on('submit(save)', function (data) {
 
             var ueditorContent = t.get(RichID).getContent();
+
+            // layer.alert(ueditorContent);
+            // return false;
 
             var formJson = data.field;
             var recommendedIndex = $(".layui-icon-rate-solid").length;
@@ -119,7 +125,7 @@
 
             var index = layer.load(1);
 
-            console.log(APIUrl + "api/index/task/save?jsonStr="+JSON.stringify(formJson));
+            // console.log(APIUrl + "api/index/task/save?jsonStr="+JSON.stringify(formJson));
 
             $.ajax({
                 type: "POST",
@@ -129,7 +135,6 @@
                 },
                 dataType: "json",
                 success: function (data) {
-
                     console.log(data);
 
                     if (data.code == 0) {

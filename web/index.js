@@ -1,4 +1,5 @@
-define(['require', 'jquery', 'layer'], function (require, $, layer) {
+
+    var APIUrl = getAPIUrl();
     //加载依赖js,
     layui.config({
         base: '../plugin/layrouter/layui_exts/',
@@ -24,8 +25,46 @@ define(['require', 'jquery', 'layer'], function (require, $, layer) {
         // 初始化
         // 监听 hash 事件
         layrouter.init();
+
+
+ // 加载
+        $(document).ready(function () {
+
+            // console.log("6666666666");
+            console.log(APIUrl + "api/index/user/info",);
+
+            var index = layer.load(1);
+
+            $.ajax({
+                type: "POST",
+                url: APIUrl + "api/index/user/info",
+                data: {},
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if(data.code=="0"){
+                        setTimeout(function () {
+                            // window.location.href = "/taskPlatform-web/web/login.html";
+                        }, 1000);
+                    }else {
+
+                    }
+
+
+                }
+                , error() {
+                    console.log("err");
+                    layer.msg('请检查网络设置，再重试');
+                }
+                , complete: function () {
+                    layer.close(index);
+
+                }
+            });
+        });
     });
 
+    // 退出登录
     function logout() {
 
         var index = layer.load(1);
@@ -36,6 +75,7 @@ define(['require', 'jquery', 'layer'], function (require, $, layer) {
             dataType: "json",
             success: function (data) {
                 console.log(data);
+                layer.msg('退出成功！');
                 setTimeout(function () {
                     window.location.href = "/taskPlatform-web/web/login.html";
                 }, 1000);
@@ -50,6 +90,3 @@ define(['require', 'jquery', 'layer'], function (require, $, layer) {
         });
 
     }
-
-
-});

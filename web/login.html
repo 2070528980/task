@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>12任务平台</title>
+
     <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico"/>
 
     <link rel="stylesheet" href="../static/css/login/reset.min.css">
     <link rel="stylesheet" href="../static/css/login/style.css">
     <link rel="stylesheet" href="../plugin/layui/css/layui.css">
+    <script src="../static/lib/common.js"></script>
 
 
 </head>
@@ -69,6 +71,9 @@
             $ = layui.jquery,
             form = layui.form;
 
+
+        var APIUrl = getAPIUrl();
+
         var slider = sliderVerify.render({
             elem: '#slider',
             onOk: function () {//当验证通过回调
@@ -87,9 +92,11 @@
                 var json = data.field;
                 var index = layer.load(1);
 
+                console.log(APIUrl+"api/login");
+
                 $.ajax({
                     type: "POST",
-                    url: "http://localhost/api/login",
+                    url: APIUrl+"api/login",
                     data: {
                         "userName": json.username,
                         "password": json.password
@@ -103,7 +110,7 @@
                         if(data.code=="000"){
                             layer.msg(data.msg);
                             setTimeout(function() {
-                                window.location.href = "/taskPlatform-web/web/index.html";
+                                // window.location.href = "/taskPlatform-web/web/index.html";
                             }, 1000);
                         }else {
                             layer.msg(data.msg);

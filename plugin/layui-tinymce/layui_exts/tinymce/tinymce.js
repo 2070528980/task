@@ -1,6 +1,6 @@
 //  http://tinymce.ax-z.cn/   中文文档
 
-layui.define(['jquery'],function (exports) {
+layui.define(['jquery'], function (exports) {
     var $ = layui.$
 
     var modFile = layui.cache.modules['tinymce'];
@@ -41,7 +41,7 @@ layui.define(['jquery'],function (exports) {
     var t = {};
 
     //初始化
-    t.render = function (option,callback) {
+    t.render = function (option, callback) {
 
         var admin = layui.admin || {}
 
@@ -51,7 +51,7 @@ layui.define(['jquery'],function (exports) {
 
         var form_data = form.data || {} //其他表单数据 {key:value, ...}
 
-        option.suffix= isset(option.suffix) ? option.suffix : (plugin_filename.indexOf('.min')>-1 ? '.min' : '')
+        option.suffix = isset(option.suffix) ? option.suffix : (plugin_filename.indexOf('.min') > -1 ? '.min' : '')
 
         option.base_url = isset(option.base_url) ? option.base_url : settings.base_url
 
@@ -79,26 +79,26 @@ layui.define(['jquery'],function (exports) {
 
         option.images_upload_handler = isset(option.images_upload_handler) ? option.images_upload_handler : function (blobInfo, succFun, failFun) {
 
-            if(isEmpty(option.images_upload_url)){
-                
+            if (isEmpty(option.images_upload_url)) {
+
                 failFun("上传接口未配置");
-                
+
                 return console.error('images_upload_url未配置');
-            
+
             }
 
             var formData = new FormData();
 
             formData.append(file_field, blobInfo.blob());
 
-            if(typeof form_data == 'object'){
-            
-                for(var key in form_data){
-            
+            if (typeof form_data == 'object') {
+
+                for (var key in form_data) {
+
                     formData.append(key, form_data[key]);
-            
+
                 }
-            
+
             }
 
             var ajaxOpt = {
@@ -157,24 +157,24 @@ layui.define(['jquery'],function (exports) {
                 title: '格式',
 
                 items: 'bold italic underline strikethrough superscript subscript | formats | forecolor backcolor | removeformat'
-           
+
             },
-            
+
             table: {title: '表格', items: 'inserttable tableprops deletetable | cell row column'},
         };
-        
+
         initTinymce();
 
-        layui.sessionData('layui-tinymce',{
+        layui.sessionData('layui-tinymce', {
 
-            key:option.selector,
+            key: option.selector,
 
-            value:option
+            value: option
         })
 
         tinymce.init(option);
 
-        if(typeof callback == 'function'){
+        if (typeof callback == 'function') {
             callback.call(option)
         }
 
@@ -193,7 +193,7 @@ layui.define(['jquery'],function (exports) {
             var id = elem.substr(1);
 
             var edit = tinymce.editors[id];
-            
+
             return edit
 
         } else {
@@ -202,7 +202,7 @@ layui.define(['jquery'],function (exports) {
     }
 
     //重载
-    t.reload = function (option,callback) {
+    t.reload = function (option, callback) {
 
         option = option || {}
 
@@ -212,11 +212,11 @@ layui.define(['jquery'],function (exports) {
 
         edit.destroy()
 
-        $.extend(optionCache,option)
+        $.extend(optionCache, option)
 
         tinymce.init(optionCache)
 
-        if(typeof callback == 'function'){
+        if (typeof callback == 'function') {
             callback.call(optionCache)
         }
 
@@ -237,7 +237,7 @@ layui.define(['jquery'],function (exports) {
         return t.reload(option, callback);
     }
 
-    function initTinymce(){
+    function initTinymce() {
         if (typeof tinymce == 'undefined') {
             $.ajax({//获取插件
                 url: settings.base_url + '/' + plugin_filename,
@@ -248,16 +248,16 @@ layui.define(['jquery'],function (exports) {
         }
     }
 
-    function isset(value){
+    function isset(value) {
         return typeof value !== 'undefined' && value !== null
     }
 
-    function isEmpty(value){
-        if(typeof value === 'undefined' || value === null|| value === ''){
+    function isEmpty(value) {
+        if (typeof value === 'undefined' || value === null || value === '') {
             return true
-        } else if (value instanceof Array && value.length === 0){
+        } else if (value instanceof Array && value.length === 0) {
             return true
-        } else if (typeof value === 'object' && Object.keys(value).length === 0){
+        } else if (typeof value === 'object' && Object.keys(value).length === 0) {
             return true
         }
         return false
