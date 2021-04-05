@@ -55,7 +55,7 @@
 
 <script>
 
-    layui.use(['table'], function () {
+    layui.use('table', function () {
 
         var table = layui.table;
         var APIUrl = getAPIUrl();
@@ -64,7 +64,6 @@
         table.on('tool(test)', function (obj) {
 
             var id = obj.data.id;
-
 
             // 详情
             if (obj.event === 'details') {
@@ -75,7 +74,10 @@
             else if (obj.event === 'bt_edit') {
 
 
-                setJson("id",id);
+                // console.log("edit/"+id);
+
+
+
                 window.location.href = "#/task/Edit";
 
 

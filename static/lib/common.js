@@ -4,6 +4,16 @@
 var apiUrl = "http://127.0.0.1/";
 var pro = window.location.protocol;
 
+var jsonParam = {};
+
+function getJson() {
+    return jsonParam;
+}
+
+function setJson(key,value) {
+    jsonParam[key]=value;
+}
+
 
 function  getAPIUrl() {
     if ('https:' == pro) {

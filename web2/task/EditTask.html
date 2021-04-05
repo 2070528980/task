@@ -66,35 +66,37 @@
     </div>
 </div>
 
-
 <script>
 
 
     layui.extend({
-        tinymce: '../plugin/layui-tinymce/layui_exts/tinymce/tinymce'
-    }).use(['tinymce', 'util', 'layer', 'form', 'rate'], function () {
+        tinymce: '../../../plugin/layui-tinymce/layui_exts/tinymce/tinymce'
+    }).use(['tinymce', 'util', 'layer', 'form','rate'], function () {
         var t = layui.tinymce;
         var form = layui.form;
         var rate = layui.rate;
 
+        var router = layui.router();
+        var id = router.search.id;
+
+        // console.log("-------666----"+id);
+
+        layer.msg("id:"+id);
+
         var RichID = "#ueditorContent";
         var APIUrl = getAPIUrl();
 
-
-        // 获取前面传过来的参数
-        var param = getJson();
-
         rate.render({
             elem: '#test2'
-            , value: 5 //初始值
-            , text: false //开启文本
+            ,value: 5 //初始值
+            ,text: false //开启文本
         });
 
         t.render({
             elem: RichID
             , height: 400
-            , images_upload_url: ""   //上传地址
-            , automatic_uploads: false   //加上了就不上传
+            ,images_upload_url:""   //上传地址
+            ,automatic_uploads: false   //加上了就不上传
 
             // 其余配置可参考官方文档
         }, function (opt) {
@@ -102,7 +104,7 @@
         });
 
 
-        // console.log(getAPIUrl());
+        console.log(getAPIUrl());
 
 
         form.on('submit(save)', function (data) {
@@ -124,7 +126,7 @@
 
 
             formJson.ueditorContent = ueditorContent;
-            formJson.recommendedIndex = recommendedIndex;
+            formJson.recommendedIndex=recommendedIndex;
 
             // console.log(JSON.stringify(formJson));
 
