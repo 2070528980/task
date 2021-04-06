@@ -69,96 +69,13 @@
 <script>
 
 
-    layui.extend({
-        tinymce: '../../../plugin/layui-tinymce/layui_exts/tinymce/tinymce'
-    }).use(['tinymce', 'util', 'layer', 'form','rate'], function () {
+    layui.use([ 'util', 'layer', 'form','rate'], function () {
         var t = layui.tinymce;
         var form = layui.form;
         var rate = layui.rate;
 
         var RichID = "#ueditorContent";
         var APIUrl = getAPIUrl();
-
-        rate.render({
-            elem: '#test2'
-            ,value: 5 //初始值
-            ,text: false //开启文本
-        });
-
-        t.render({
-            elem: RichID
-            , height: 400
-            ,images_upload_url:""   //上传地址
-            ,automatic_uploads: false   //加上了就不上传
-
-            // 其余配置可参考官方文档
-        }, function (opt) {
-            //加载完成后回调
-        });
-
-
-        console.log(getAPIUrl());
-
-
-        form.on('submit(save)', function (data) {
-
-            var ueditorContent = t.get(RichID).getContent();
-
-            // layer.alert(ueditorContent);
-            // return false;
-
-            var formJson = data.field;
-            var recommendedIndex = $(".layui-icon-rate-solid").length;
-            // console.log(ueditorContent.length);
-            // console.log(recommendedIndex);
-
-            if (ueditorContent.length == 0) {
-                layer.msg("请输入项目步骤");
-                return false;
-            }
-
-
-            formJson.ueditorContent = ueditorContent;
-            formJson.recommendedIndex=recommendedIndex;
-
-            // console.log(JSON.stringify(formJson));
-
-            var index = layer.load(1);
-
-            // console.log(APIUrl + "api/index/task/save?jsonStr="+JSON.stringify(formJson));
-
-            $.ajax({
-                type: "POST",
-                url: APIUrl + "api/index/task/save",
-                data: {
-                    "jsonStr": JSON.stringify(formJson)
-                },
-                dataType: "json",
-                success: function (data) {
-                    console.log(data);
-                    if (data.code == "000") {
-
-                        console.log(data);
-                        layer.msg('保存成功');
-                        setTimeout(function () {
-                            window.location.href = "#/task/list";
-                        }, 2000);
-                    } else {
-                        layer.msg(data.msg);
-                        setTimeout(function () {
-                            // window.location.href = "/taskPlatform-web/web/login.html";
-                        }, 2000);
-                    }
-                }
-                , error() {
-                    layer.msg('请检查网络设置，再重试');
-                }
-                , complete: function () {
-                    layer.close(index);
-
-                }
-            });
-        });
 
 
     });

@@ -75,7 +75,7 @@
             else if (obj.event === 'bt_edit') {
 
 
-                setJson("id",id);
+                setJson("taskID",id);
                 window.location.href = "#/task/Edit";
 
 
@@ -94,7 +94,7 @@
                         var index = layer.load(1);
                         $.ajax({
                             type: "POST",
-                            url: APIUrl + "/api/index/task/del",
+                            url: APIUrl + "api/index/task/del",
                             data: {
                                 "id": id
                             },
@@ -131,7 +131,7 @@
         //加载表格
         var tableIns = table.render({
             elem: '#test'
-            , url: APIUrl + '/api/index/task/list'   //获取json的地址
+            , url: APIUrl + 'api/index/task/list'   //获取json的地址
             , toolbar: '#toolbarDemo' //上方工具栏
             , title: '贷款进度' //定义 table 的大标题（在文件导出等地方会用到）
             , totalRow: true //是否合计

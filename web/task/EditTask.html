@@ -13,11 +13,13 @@
     <div class="douruimi-form edit-goods" style=" overflow-y: auto;height:700px;">
         <form class="layui-form" action="" onsubmit="return false">
 
+            <input type="text" class="layui-input" style="display: none" name="id" id="id">
+
             <div class="layui-form-item">
                 <label class="layui-form-label"><span class="input-must">*</span>项目名称</label>
                 <div class="layui-input-inline">
                     <input type="text" maxlength="100" lay-verify="required" autocomplete="off" placeholder=""
-                           class="layui-input" name="projectName">
+                           class="layui-input" name="projectName" id="projectName">
                 </div>
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
@@ -25,7 +27,7 @@
                 <label class="layui-form-label"><span class="input-must">*</span>项目简介</label>
                 <div class="layui-input-inline">
                     <input type="text" maxlength="100" lay-verify="required" autocomplete="off" placeholder=""
-                           class="layui-input" name="projectIntroduce">
+                           class="layui-input" name="projectIntroduce" id="projectIntroduce">
                 </div>
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
@@ -34,7 +36,7 @@
                 <label class="layui-form-label"><span class="input-must">*</span>项目标签</label>
                 <div class="layui-input-inline">
                     <input type="text" maxlength="50" lay-verify="required" autocomplete="off" placeholder=""
-                           class="layui-input" name="projectLabel">
+                           class="layui-input" name="projectLabel" id="projectLabel">
                 </div>
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
@@ -70,9 +72,8 @@
 <script>
 
 
-    layui.extend({
-        tinymce: '../plugin/layui-tinymce/layui_exts/tinymce/tinymce'
-    }).use(['tinymce', 'util', 'layer', 'form', 'rate'], function () {
+    layui.use(['tinymce', 'util', 'layer', 'form', 'rate'], function () {
+
         var t = layui.tinymce;
         var form = layui.form;
         var rate = layui.rate;
@@ -80,16 +81,14 @@
         var RichID = "#ueditorContent";
         var APIUrl = getAPIUrl();
 
-
-        // 获取前面传过来的参数
-        var param = getJson();
-
+        // 五星好评
         rate.render({
             elem: '#test2'
             , value: 5 //初始值
             , text: false //开启文本
         });
 
+        // 富文本
         t.render({
             elem: RichID
             , height: 400
@@ -102,8 +101,48 @@
         });
 
 
-        // console.log(getAPIUrl());
+        $(document).ready(function () {
 
+            // 获取前面传过来的参数
+            var param = getJson();
+            var taskID = param.taskID;
+
+            if (typeof(taskID) != "undefined") {
+
+                var index = layer.load(1);
+
+                $.ajax({
+                    type: "GET",
+                    url: APIUrl + "api/index/task/getOneByID",
+                    data: {id: taskID},
+                    dataType: "json",
+                    success: function (data) {
+                        // console.log(data);
+                        if (data.data != null) {
+                            setTimeout(function () {
+                                $("#id").val(data.data.id);
+                                $("#projectName").val(data.data.projectName);
+                                $("#projectIntroduce").val(data.data.projectIntroduce);
+                                $("#projectLabel").val(data.data.projectLabel);
+                                t.get(RichID).insertContent(data.data.ueditorContent);
+                                $("#projectState").val(data.data.projectState);
+                            }, 1000);
+                        }
+                    }
+                    , error() {
+                        console.log("获取用户信息err");
+                        layer.msg('请检查网络设置，再重试');
+                    }
+                    , complete: function () {
+                        layer.close(index);
+
+                    }
+                });
+
+            }
+
+        });
+        // console.log(getAPIUrl());
 
         form.on('submit(save)', function (data) {
 
@@ -122,16 +161,15 @@
                 return false;
             }
 
-
             formJson.ueditorContent = ueditorContent;
             formJson.recommendedIndex = recommendedIndex;
 
-            // console.log(JSON.stringify(formJson));
-
-            var index = layer.load(1);
+            console.log(JSON.stringify(formJson));
 
             // console.log(APIUrl + "api/index/task/save?jsonStr="+JSON.stringify(formJson));
 
+
+            var index = layer.load(1);
             $.ajax({
                 type: "POST",
                 url: APIUrl + "api/index/task/save",
@@ -156,6 +194,7 @@
                     }
                 }
                 , error() {
+                    console.log("task保存err");
                     layer.msg('请检查网络设置，再重试');
                 }
                 , complete: function () {
@@ -163,6 +202,8 @@
 
                 }
             });
+
+
         });
 
 
