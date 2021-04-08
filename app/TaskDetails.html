@@ -3,89 +3,73 @@
     <meta charset="UTF-8">
     <title>12任务平台</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <link rel="stylesheet" href="../plugin/sui-mobile/dist/css/sm.min.css">
-    <link rel="stylesheet" href="../plugin/sui-mobile/dist/css/sm-extend.min.css">
-    <link rel="stylesheet" href="../plugin/sui-mobile/_site/assets/css/demos.css">
+    <link rel="stylesheet" href="../plugin/jquery-weui/dist/lib/weui.min.css">
+    <link rel="stylesheet" href="../plugin/jquery-weui/dist/css/jquery-weui.css">
+
+
 
 </head>
 
-<body>
+<body ontouchstart="">
 
-
-<div class="page-group">
-    <div id="page-title-bar-links" class="page page-current">
-        <header class="bar bar-nav">
-            <a class="button button-link button-nav pull-left back" >
-                <span class="icon icon-left"></span>
-                返回
-            </a>
-            <a class="button button-link button-nav pull-right" href="index.html">
-                首页
-                <span class="icon icon-right"></span>
-            </a>
-            <h1 class="title">任务详情</h1>
-        </header>
-        <div class="content native-scroll"></div>
+<div class="weui-navbar">
+    <div class="weui-navbar__item weui_bar__item_on">
+        任务详情
     </div>
-
-
-
-
-
 </div>
 
+<header class="demos-header" >
+    <h1 class="demos-title" style="text-align: center" id="title"></h1>
+</header>
+
+<article class="weui-article" id="content">
+
+</article>
 
 
-<script src="../plugin/sui-mobile/_site/assets/js/jquery.min.js"></script>
-<script src="../plugin/sui-mobile/_site/assets/js/config.js"></script>
-<script src="../plugin/sui-mobile/dist/js/sm.js"></script>
-<script src="../plugin/sui-mobile/dist/js/sm-extend.js"></script>
-<script src="../plugin/sui-mobile/dist/js/sm-city-picker.js"></script>
-<script src="../plugin/sui-mobile/_site/assets/js/demos.js"></script>
+
+<script src="../plugin/jquery/jquery-3.2.1.js"></script>
 <script src="../static/lib/common.js"></script>
-
 <script>
-    var a = UrlParam.paramValues("a");
-    console.log(a);
 
-    var APIUrl = getAPIUrl();
+    (function () {
 
-    $(document).ready(function () {
 
-        $.ajax({
-            type: "GET",
-            url: APIUrl + "api/other/taskListAll",
-            data: {keyword: ""},
-            dataType: "json",
-            success: function (data) {
-                console.log(data);
-                var html="";
-                $("#content").empty();
-                $.each(data.data, function (index, n) {
+        var id = UrlParam.paramValues("param");
+        console.log(id.toString());
 
-                    html=" <li>\n" +
-                        "                        <a href=\"TaskDetails.html?param="+n.id+"\" class=\"item-link item-content\">\n" +
-                        "                            <div class=\"item-inner\">\n" +
-                        "                                <div class=\"item-title-row\">\n" +
-                        "                                    <div class=\"item-title\">"+n.projectName+"</div>\n" +
-                        "                                    <div class=\"item-after\">"+n.projectLabel+"</div>\n" +
-                        "                                </div>\n" +
-                        // "                                <div class=\"item-subtitle\">"+n.projectIntroduce+"</div>\n" +
-                        "                                <div class=\"item-text\">"+n.projectIntroduce+"</div>\n" +
-                        "                            </div>\n" +
-                        "                        </a>\n" +
-                        "                    </li>";
-                    $("#content").append(html);
-                });
-            }
-            , error() {
-                console.log("获取listAll信息err");
-                // layer.msg('请检查网络设置，再重试');
-            }
-            , complete: function () {
-            }
+        var APIUrl = getAPIUrl();
+
+        $(document).ready(function () {
+
+            $.ajax({
+                type: "GET",
+                url: APIUrl + "api/other/taskByID",
+                data: {id: id.toString()},
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+
+                    $("#title").append(data.data.projectName);
+
+                    $("#content").append(data.data.ueditorContent);
+
+
+                }
+                , error() {
+                    console.log("获取taskByID信息err");
+                    // layer.msg('请检查网络设置，再重试');
+                    $.toast("请检查网络设置，再重试", "text");
+                }
+                , complete: function () {
+                }
+            });
         });
-    });
+
+
+
+
+    })();
 
 
 
