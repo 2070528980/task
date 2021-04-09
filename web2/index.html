@@ -23,7 +23,7 @@
 
         <!--上方导航栏-->
         <ul class="layui-nav layui-layout-left" id="topMenus">
-            <li class="layui-nav-item"><a href="#/task/list">任务管理</a></li>
+            <li class="layui-nav-item"><a href="#/task/ListTask">任务管理</a></li>
             <li class="layui-nav-item"><a href="#/role">角色管理</a></li>
             <li class="layui-nav-item"><a href="#/setUp">基本设置</a></li>
         </ul>
@@ -54,114 +54,16 @@
     </div>
 </div>
 
-<script src="../plugin/jquery/jquery-3.2.1.js"></script>
+
 <script src="../plugin/layui/layui.js"></script>
-<script src="../static/lib/common.js"></script>
-<!--<script src="../plugin/require/require.js" data-main="../static/lib/main.js"></script>-->
 
 <script>
-
-
-    var APIUrl = getAPIUrl();
-    //加载依赖js,
     layui.config({
-        base: '../plugin/layrouter/layui_exts/',
-        // version: new Date().valueOf()
-    }).extend({
-        layrouter: 'layrouter/layrouter'
-    }).use(['layrouter', 'layer', 'element'], function () {
-        var layrouter = layui.layrouter;
-        var router = layui.router();
-        var layer = layui.layer;
-        var element = layui.element;
-
-        // 注册一些路由
-        layrouter.register('/task/list', function () {
-            $("#result").load("task/ListTask.html");
-        });
-        layrouter.register('/role', function () {
-            $("#result").load("test/test1.html");
-        });
-        layrouter.register('/setUp', function () {
-            $("#result").load("test/test2.html");
-        });
-        layrouter.register('/task/Edit', function () {
-
-            $("#result").load("task/EditTask.html");
-        });
-
-        // 初始化
-        // 监听 hash 事件
-        layrouter.init();
-
-
-        // 加载
-               $(document).ready(function () {
-
-                   // console.log("6666666666");
-                   // console.log(APIUrl + "api/index/user/info",);
-
-                   var index = layer.load(1);
-
-                   $.ajax({
-                       type: "POST",
-                       url: APIUrl + "api/index/user/info",
-                       data: {},
-                       dataType: "json",
-                       success: function (data) {
-                           // console.log(data);
-                           if(data.code=="0"){
-
-                               layer.msg(data.msg);
-                               setTimeout(function () {
-                                   window.location.href = "/taskPlatform-web/web/login.html";
-                               }, 2000);
-                           }else {
-
-                           }
-                       }
-                       , error() {
-                           // console.log("err");
-                           layer.msg('请检查网络设置，再重试');
-                       }
-                       , complete: function () {
-                           layer.close(index);
-
-                       }
-                   });
-               });
-    });
-
-    // 退出登录
-    function logout() {
-
-        var index = layer.load(1);
-        $.ajax({
-            type: "GET",
-            url: APIUrl + "api/login/logout",
-            data: {},
-            dataType: "json",
-            success: function (data) {
-                // console.log(data);
-                layer.msg('退出成功！');
-                setTimeout(function () {
-                    window.location.href = "/taskPlatform-web/web/login.html";
-                }, 1000);
-            }
-            , error() {
-                layer.msg('请检查网络设置，再重试');
-            }
-            , complete: function () {
-                layer.close(index);
-
-            }
-        });
-
-    }
-
-
-
+        base: 'js/',
+        version: Date.parse(new Date())
+    }).use(['app']); //加载
 </script>
+
 
 </body>
 

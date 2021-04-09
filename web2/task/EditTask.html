@@ -70,21 +70,15 @@
 
 
     layui.extend({
-        tinymce: '../../../plugin/layui-tinymce/layui_exts/tinymce/tinymce'
-    }).use(['tinymce', 'util', 'layer', 'form','rate'], function () {
+        tinymce: '../../plugin/layui-tinymce/layui_exts/tinymce/tinymce'
+    }).use(['tinymce', 'util', 'layer', 'form','rate','setting'], function () {
         var t = layui.tinymce;
         var form = layui.form;
-        var rate = layui.rate;
-
-        var router = layui.router();
-        var id = router.search.id;
-
-        // console.log("-------666----"+id);
-
-        layer.msg("id:"+id);
+        var rate = layui.rate
+            ,setting = layui.setting;
 
         var RichID = "#ueditorContent";
-        var APIUrl = getAPIUrl();
+        var APIUrl = setting.api_url;
 
         rate.render({
             elem: '#test2'
@@ -102,9 +96,6 @@
         }, function (opt) {
             //加载完成后回调
         });
-
-
-        console.log(getAPIUrl());
 
 
         form.on('submit(save)', function (data) {
