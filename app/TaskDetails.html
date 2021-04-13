@@ -3,59 +3,71 @@
     <meta charset="UTF-8">
     <title>12任务平台</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <link rel="stylesheet" href="../plugin/jquery-weui/dist/lib/weui.min.css">
-    <link rel="stylesheet" href="../plugin/jquery-weui/dist/css/jquery-weui.css">
 
+    <link rel="stylesheet" href="../plugin/sui-mobile/dist/css/sm.min.css">
+    <link rel="stylesheet" href="../plugin/sui-mobile/dist/css/sm-extend.min.css">
+    <link rel="stylesheet" href="../plugin/sui-mobile/_site/assets/css/demos.css">
 
 
 </head>
 
-<body ontouchstart="">
+<body>
 
-<div class="weui-navbar">
-    <div class="weui-navbar__item weui_bar__item_on">
-        任务详情
-    </div>
-</div>
-
-<header class="demos-header" >
-    <h1 class="demos-title" style="text-align: center" id="title"></h1>
+<header class="bar bar-nav" id="header">
+    <a class="button button-link button-nav pull-left back" href="javascript:history.go(-1)">
+        <span class="icon icon-left"></span>
+        返回
+    </a>
+    <a class="button button-link button-nav pull-right" href="javascript:history.go(0)">
+        刷新
+        <span class="icon icon-right"></span>
+    </a>
+    <h1 class="title">标题</h1>
 </header>
 
-<article class="weui-article" id="content">
 
-</article>
+<div id="content" style=" width: 95%;margin: 50px auto; overflow-y: auto;">
 
+</div>
 
 
 <script src="../plugin/jquery/jquery-3.2.1.js"></script>
 <script src="../plugin/jquery-weui/dist/js/jquery-weui.js"></script>
-<script src="../static/lib/common.js"></script>
+<script src="js/setting.js"></script>
 <script>
 
     (function () {
-
-
-        var id = UrlParam.paramValues("param");
-        console.log(id.toString());
 
         var APIUrl = getAPIUrl();
 
         $(document).ready(function () {
 
+            var bodyH = $("body").outerHeight(true);
+            var headHeight = $("#header").outerHeight(true);
+            $("#content").height(bodyH - headHeight);
+
+            var param = location.hash;
+            param = param.toString().replace("#", "");
+            param = param.slice(4);
+            console.log(param);
+
             $.ajax({
                 type: "GET",
-                url: APIUrl + "api/other/taskByID",
-                data: {id: id.toString()},
+                url: APIUrl + "/api/H5/taskByID",
+                data: {id: param},
                 dataType: "json",
                 success: function (data) {
                     console.log(data);
 
-                    $("#title").append(data.data.projectName);
+                    if (data.data == null) {
+                        console.log("66666666666");
+                        $("#title").append("该任务不存在");
 
-                    $("#content").append(data.data.ueditorContent);
+                    } else {
+                        $("#title").append(data.data.projectName);
 
-
+                        $("#content").append(data.data.ueditorContent);
+                    }
                 }
                 , error() {
                     console.log("获取taskByID信息err");
@@ -65,13 +77,11 @@
                 , complete: function () {
                 }
             });
+
         });
 
 
-
-
     })();
-
 
 
 </script>

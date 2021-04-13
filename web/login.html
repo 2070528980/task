@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="../static/css/login/reset.min.css">
     <link rel="stylesheet" href="../static/css/login/style.css">
     <link rel="stylesheet" href="../plugin/layui/css/layui.css">
-    <script src="../static/lib/common.js"></script>
 
 
 </head>
@@ -60,19 +59,19 @@
 </div>
 
 <script src="../plugin/layui/layui.js"></script>
+<!--<script src="js/setting.js"></script>-->
 
 
 <script type="text/javascript" charset="utf-8">
 
     layui.config({
-        base: '../plugin/dist/sliderVerify/'
-    }).use(['sliderVerify', 'jquery', 'form'], function () {
+        base: ['js/']
+    }).use(['sliderVerify', 'jquery', 'form','setting'], function () {
         var sliderVerify = layui.sliderVerify,
             $ = layui.jquery,
             form = layui.form;
-
-
-        var APIUrl = getAPIUrl();
+        var setting = layui.setting;
+        var APIUrl = setting.api_url;
 
         var slider = sliderVerify.render({
             elem: '#slider',
@@ -96,7 +95,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: APIUrl+"api/login",
+                    url: APIUrl+"/api/login",
                     data: {
                         "userName": json.username,
                         "password": json.password
@@ -110,7 +109,7 @@
                         if(data.code=="000"){
                             layer.msg(data.msg);
                             setTimeout(function() {
-                                window.location.href = "/taskPlatform-web/web/index.html";
+                                window.location.href = "/taskPlatform/web/index.html";
                             }, 1000);
                         }else {
                             layer.msg(data.msg);

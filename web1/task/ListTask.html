@@ -16,7 +16,7 @@
         <div class="layui-row">
             <div class="layui-inline" style="float: left">
                 <a class="layui-btn" style="display: inline-block;" href="javascript:window.location.reload();">刷新</a>
-                <a class="layui-btn" style="display: inline-block;" href="#/task/EditTask">添加任务</a>
+                <a class="layui-btn" style="display: inline-block;" href="#/task/Edit">添加任务</a>
             </div>
 
             <form class="layui-form ng-pristine ng-valid" style="float: right">
@@ -55,17 +55,16 @@
 
 <script>
 
-    layui.use(['table','setting'], function () {
+    layui.use(['table'], function () {
 
-        var table = layui.table
-            , $ = layui.$
-             ,setting = layui.setting;
-        var APIUrl = setting.api_url;
+        var table = layui.table;
+        var APIUrl = getAPIUrl();
 
         //监听工具条  test为加载的table的elem
         table.on('tool(test)', function (obj) {
 
             var id = obj.data.id;
+
 
             // 详情
             if (obj.event === 'details') {
@@ -75,8 +74,9 @@
             // 编辑
             else if (obj.event === 'bt_edit') {
 
-                // console.log("edit/"+id);
-                window.location.href = "#/task/EditTask";
+
+                setJson("taskID",id);
+                window.location.href = "#/task/Edit";
 
 
                 // console.log("编辑");
@@ -91,10 +91,10 @@
                     , content: "是否确认删除？"
                     , yes: function (index, layero) {
 
-                        var load_index = layer.load(1);
+                        var index = layer.load(1);
                         $.ajax({
                             type: "POST",
-                            url: APIUrl + "/api/index/task/del",
+                            url: APIUrl + "api/index/task/del",
                             data: {
                                 "id": id
                             },
@@ -110,7 +110,7 @@
                                 layer.msg('请检查网络设置，再重试');
                             }
                             , complete: function () {
-                                layer.close(load_index);
+                                layer.close(index);
 
                             }
                         });
@@ -131,7 +131,7 @@
         //加载表格
         var tableIns = table.render({
             elem: '#test'
-            , url: APIUrl + '/api/index/task/list'   //获取json的地址
+            , url: APIUrl + 'api/index/task/list'   //获取json的地址
             , toolbar: '#toolbarDemo' //上方工具栏
             , title: '贷款进度' //定义 table 的大标题（在文件导出等地方会用到）
             , totalRow: true //是否合计

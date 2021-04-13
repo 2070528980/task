@@ -72,14 +72,17 @@
 <script>
 
 
-    layui.use(['tinymce', 'util', 'layer', 'form', 'rate'], function () {
+    layui.use(['tinymce', 'util', 'layer', 'form', 'rate', 'setting'], function () {
 
-        var t = layui.tinymce;
-        var form = layui.form;
-        var rate = layui.rate;
+        var t = layui.tinymce
+             ,rate = layui.rate
+            , form = layui.form
+            ,setting = layui.setting
+            , $ = layui.$;
 
+
+        var APIUrl = setting.api_url;
         var RichID = "#ueditorContent";
-        var APIUrl = getAPIUrl();
 
         // 五星好评
         rate.render({
@@ -104,16 +107,17 @@
         $(document).ready(function () {
 
             // 获取前面传过来的参数
-            var param = getJson();
-            var taskID = param.taskID;
+            var taskID = localStorage.getItem("id");
+            localStorage.removeItem('id');
+
+            // console.log("taskID:"+taskID);
 
             if (typeof(taskID) != "undefined") {
 
-                var index = layer.load(1);
-
+                var load_index = layer.load(1);
                 $.ajax({
                     type: "GET",
-                    url: APIUrl + "api/index/task/getOneByID",
+                    url: APIUrl + "/api/index/task/getOneByID",
                     data: {id: taskID},
                     dataType: "json",
                     success: function (data) {
@@ -134,8 +138,7 @@
                         layer.msg('请检查网络设置，再重试');
                     }
                     , complete: function () {
-                        layer.close(index);
-
+                        layer.close(load_index);
                     }
                 });
 
@@ -143,6 +146,7 @@
 
         });
         // console.log(getAPIUrl());
+
 
         form.on('submit(save)', function (data) {
 
@@ -164,15 +168,15 @@
             formJson.ueditorContent = ueditorContent;
             formJson.recommendedIndex = recommendedIndex;
 
-            console.log(JSON.stringify(formJson));
+            // console.log(JSON.stringify(formJson));
 
             // console.log(APIUrl + "api/index/task/save?jsonStr="+JSON.stringify(formJson));
 
 
-            var index = layer.load(1);
+            var load_index = layer.load(1);
             $.ajax({
                 type: "POST",
-                url: APIUrl + "api/index/task/save",
+                url: APIUrl + "/api/index/task/save",
                 data: {
                     "jsonStr": JSON.stringify(formJson)
                 },
@@ -181,10 +185,10 @@
                     // console.log(data);
                     if (data.code == "000") {
 
-                        console.log(data);
+                        // console.log(data);
                         layer.msg('保存成功');
                         setTimeout(function () {
-                            window.location.href = "#/task/list";
+                            window.location.href = "#/task/ListTask";
                         }, 2000);
                     } else {
                         layer.msg(data.msg);
@@ -198,7 +202,7 @@
                     layer.msg('请检查网络设置，再重试');
                 }
                 , complete: function () {
-                    layer.close(index);
+                    layer.close(load_index);
 
                 }
             });
