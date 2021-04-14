@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/taskPlatform-web.iml" filepath="$PROJECT_DIR$/.idea/taskPlatform-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/taskPlatform.iml" filepath="$PROJECT_DIR$/.idea/taskPlatform.iml" />
     </modules>
   </component>
 </project>

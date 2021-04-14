@@ -18,8 +18,8 @@
         <span class="icon icon-left"></span>
         返回
     </a>
-    <a class="button button-link button-nav pull-right" href="javascript:history.go(0)">
-        刷新
+    <a class="button button-link button-nav pull-right" href="TaskList.html">
+        首页
         <span class="icon icon-right"></span>
     </a>
     <h1 class="title">标题</h1>
@@ -61,10 +61,10 @@
 
                     if (data.data == null) {
                         console.log("66666666666");
-                        $("#title").append("该任务不存在");
+                        $("#content").append("该任务不存在");
 
                     } else {
-                        $("#title").append(data.data.projectName);
+                        // $("#title").append(data.data.projectName);
 
                         $("#content").append(data.data.ueditorContent);
                     }
