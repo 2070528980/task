@@ -2,9 +2,11 @@
 
     <div class="breadcrumb">
         <span class="layui-breadcrumb">
-          <a href="javascript:;">首页</a>
+          <a href="#">首页</a>
             <span lay-separator="">/</span>
           <a href="javascript:;">任务管理</a>
+            <span lay-separator="">/</span>
+            <a href="#/task/ListTask">任务列表</a>
             <span lay-separator="">/</span>
           <a><cite>添加任务</cite></a>
         </span>
@@ -102,8 +104,8 @@
         t.render({
             elem: RichID
             , height: 400
-            , images_upload_url: ""   //上传地址
-            , automatic_uploads: false   //加上了就不上传
+            , images_upload_url: APIUrl+"/api/index/file/uploadApi"   //上传地址
+            , automatic_uploads: true   //加上了就不上传
 
             // 其余配置可参考官方文档
         }, function (opt) {

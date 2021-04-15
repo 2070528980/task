@@ -18,7 +18,7 @@
             <span class="icon icon-left"></span>
             返回
         </a>
-        <a class="button button-link button-nav pull-right" href="List.html">
+        <a class="button button-link button-nav pull-right" href="index.html">
             首页
             <span class="icon icon-right"></span>
         </a>
@@ -85,9 +85,7 @@
                     $.toast("请检查网络设置，再重试", "text");
                 }
                 , complete: function () {
-                    setTimeout(function () {
                         $.hideIndicator();
-                    }, 500);
                 }
             });
         });

@@ -101,6 +101,8 @@ layui.define(['jquery'], function (exports) {
 
             }
 
+            console.log(formData);
+
             var ajaxOpt = {
 
                 url: option.images_upload_url,
@@ -116,6 +118,8 @@ layui.define(['jquery'], function (exports) {
                 contentType: false,
 
                 success: function (res) {
+
+                    console.log(res);
 
                     settings.success(res, succFun, failFun)
 
