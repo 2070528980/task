@@ -16,7 +16,7 @@
             <input type="text" class="layui-input" style="display: none" name="id" id="id">
 
             <div class="layui-form-item">
-                <label class="layui-form-label"><span class="input-must">*</span>项目名称</label>
+                <label class="layui-form-label">项目名称</label>
                 <div class="layui-input-inline">
                     <input type="text" maxlength="100" lay-verify="required" autocomplete="off" placeholder=""
                            class="layui-input" name="projectName" id="projectName">
@@ -24,7 +24,7 @@
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label"><span class="input-must">*</span>项目简介</label>
+                <label class="layui-form-label">项目简介</label>
                 <div class="layui-input-inline">
                     <input type="text" maxlength="100" lay-verify="required" autocomplete="off" placeholder=""
                            class="layui-input" name="projectIntroduce" id="projectIntroduce">
@@ -33,7 +33,7 @@
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label"><span class="input-must">*</span>项目标签</label>
+                <label class="layui-form-label">项目标签</label>
                 <div class="layui-input-inline">
                     <input type="text" maxlength="50" lay-verify="required" autocomplete="off" placeholder=""
                            class="layui-input" name="projectLabel" id="projectLabel">
@@ -41,8 +41,15 @@
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
 
+            <div class="layui-inline">
+                <label class="layui-form-label">金额</label>
+                <div class="layui-input-inline">
+                    <input name="amount" id="amount" type="text" autocomplete="off" class="layui-input" value=""  placeholder="请输入金额" lay-verify="required">
+                </div>
+            </div>
+
             <div class="layui-form-item">
-                <label class="layui-form-label"><span class="input-must">*</span>推荐指数</label>
+                <label class="layui-form-label">推荐指数</label>
                 <div class="layui-input-inline">
                     <div id="test2"></div>
                 </div>
@@ -128,6 +135,7 @@
                                 $("#projectName").val(data.data.projectName);
                                 $("#projectIntroduce").val(data.data.projectIntroduce);
                                 $("#projectLabel").val(data.data.projectLabel);
+                                $("#amount").val(data.data.amount);
                                 t.get(RichID).insertContent(data.data.ueditorContent);
                                 $("#projectState").val(data.data.projectState);
                             }, 1000);
@@ -203,7 +211,6 @@
                 }
                 , complete: function () {
                     layer.close(load_index);
-
                 }
             });
 

@@ -12,27 +12,35 @@
 </head>
 
 <body>
+<div class="row">
+    <header class="bar bar-nav" id="header">
+        <a class="button button-link button-nav pull-left back" href="javascript:history.go(-1)">
+            <span class="icon icon-left"></span>
+            返回
+        </a>
+        <a class="button button-link button-nav pull-right" href="List.html">
+            首页
+            <span class="icon icon-right"></span>
+        </a>
+        <h1 class="title">标题</h1>
+    </header>
+</div>
 
-<header class="bar bar-nav" id="header">
-    <a class="button button-link button-nav pull-left back" href="javascript:history.go(-1)">
-        <span class="icon icon-left"></span>
-        返回
-    </a>
-    <a class="button button-link button-nav pull-right" href="TaskList.html">
-        首页
-        <span class="icon icon-right"></span>
-    </a>
-    <h1 class="title">标题</h1>
-</header>
+<div class="row" style="margin: 50px auto;text-align: center;" id="nullText">
+    <div style="font-size: 30px;" id="projectName">
+
+    </div>
+    <span style="color: red;" id="amount"></span>元
+</div>
 
 
-<div id="content" style=" width: 95%;margin: 50px auto; overflow-y: auto;">
+<div id="content" style=" width: 95%;margin: 0 auto; overflow-y: auto;">
 
 </div>
 
 
 <script src="../plugin/jquery/jquery-3.2.1.js"></script>
-<script src="../plugin/jquery-weui/dist/js/jquery-weui.js"></script>
+<script src="../plugin/sui-mobile/dist/js/sm.js"></script>
 <script src="js/setting.js"></script>
 <script>
 
@@ -51,6 +59,7 @@
             param = param.slice(4);
             console.log(param);
 
+            $.showIndicator();
             $.ajax({
                 type: "GET",
                 url: APIUrl + "/api/H5/taskByID",
@@ -60,12 +69,13 @@
                     console.log(data);
 
                     if (data.data == null) {
-                        console.log("66666666666");
-                        $("#content").append("该任务不存在");
+                        // console.log("66666666666");
+                        $("#nullText").empty();
+                        $("#nullText").append("该任务不存在");
 
                     } else {
-                        // $("#title").append(data.data.projectName);
-
+                        $("#projectName").append(data.data.projectName);
+                        $("#amount").append(data.data.amount);
                         $("#content").append(data.data.ueditorContent);
                     }
                 }
@@ -75,14 +85,13 @@
                     $.toast("请检查网络设置，再重试", "text");
                 }
                 , complete: function () {
+                    setTimeout(function () {
+                        $.hideIndicator();
+                    }, 500);
                 }
             });
-
         });
-
-
     })();
-
 
 </script>
 

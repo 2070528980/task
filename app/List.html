@@ -68,6 +68,8 @@
 
         $(document).ready(function () {
 
+
+            $.showIndicator();
             $.ajax({
                 type: "GET",
                 url: APIUrl + "/api/H5/taskListAll",
@@ -80,7 +82,7 @@
                     $.each(data.data, function (index, n) {
 
                         html=" <li>\n" +
-                            "                        <a href=\"TaskDetails.html#"+getRand(1000,9999)+n.id+"\" class=\"item-link item-content\">\n" +
+                            "                        <a href=\"Details.html#"+getRand(1000,9999)+n.id+"\" class=\"item-link item-content\">\n" +
                             "                            <div class=\"item-inner\">\n" +
                             "                                <div class=\"item-title-row\">\n" +
                             "                                    <div class=\"item-title\">"+n.projectName+"</div>\n" +
@@ -99,6 +101,9 @@
                     // layer.msg('请检查网络设置，再重试');
                 }
                 , complete: function () {
+                    setTimeout(function () {
+                        $.hideIndicator();
+                    }, 500);
                 }
             });
         });

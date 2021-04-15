@@ -109,14 +109,12 @@
                         if(data.code=="000"){
                             layer.msg(data.msg);
                             setTimeout(function() {
-                                window.location.href = "/taskPlatform/web/index.html";
+                                window.location.href = "index.html";
                             }, 1000);
                         }else {
                             layer.msg(data.msg);
                         }
-
-                        console.log(data);
-
+                        // console.log(data);
                     }, error: function () {
                         layer.msg('请检查网络设置，再重试');
                     }
