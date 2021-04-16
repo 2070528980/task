@@ -56,13 +56,12 @@
 
 
 <script src="../plugin/layui/layui.js"></script>
+<script src="../plugin/ckeditor4full/ckeditor.js"></script>
 
 <script>
     layui.config({
         base: 'js/',
         version: Date.parse(new Date())
-    }).extend({
-        tinymce: '../../plugin/layui-tinymce/layui_exts/tinymce/tinymce'
     }).use(['layer','setting','app'], function () {
         var $ = layui.$;
         var setting = layui.setting;
@@ -71,7 +70,7 @@
         $(document).ready(function () {
 
             // console.log("6666666666");
-            console.log(APIUrl + "/api/index/user/info",);
+            // console.log(APIUrl + "/api/index/user/info",);
 
             var load_index = layer.load(1);
 

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="robots" content="noindex, nofollow">
+	<title>Using CKEditor API</title>
+	<script src="https://cdn.ckeditor.com/4.16.0/standard-all/ckeditor.js"></script>
+</head>
+
+<body>
+<textarea cols="100" id="editor1" name="editor1" rows="10">
+</textarea>
+<p id="eMessage"></p>
+<div id="eButtons">
+	<p>
+		<input onclick="InsertHTML();" type="button" value="插入HTML">
+		<input onclick="SetContents();" type="button" value="设置编辑器内容">
+		<input onclick="GetContents();" type="button" value="获取编辑器内容（HTML）">
+	</p>
+
+	<textarea cols="100" id="htmlArea" rows="3">这是一个textarea，idhtmlArea</textarea>
+	<p>
+		<input onclick="InsertText();" type="button" value="插入Text">
+	</p>
+	<textarea cols="100" id="txtArea" rows="3">这是一个textarea</textarea>
+	<p>
+		<input id="exec-bold" onclick="ExecuteCommand('bold');" type="button" value="执行“Bold”命令">
+		<input id="exec-link" onclick="ExecuteCommand('link');" type="button" value="执行“link”命令">
+		<input onclick="Focus();" type="button" value="Focus">
+		<input onclick="CheckDirty();" type="button" value="checkDirty()">
+		<input onclick="ResetDirty();" type="button" value="resetDirty()">
+	</p>
+</div>
+
+
+<script>
+
+    var editor = CKEDITOR.replace('editor1', {
+        height: 150
+    });
+
+
+    function GetContents() {
+        var editor = CKEDITOR.instances.editor1;
+        alert(editor.getData());
+    }
+
+
+
+
+</script>
+
+<script>
+    // function ShowMessage(msg) {
+    //     document.getElementById('eMessage').innerHTML = msg;
+    // }
+	//
+    function InsertHTML() {
+        var editor = CKEDITOR.instances.editor1;
+        var value ="<p><span style=\"font-size:10.5pt\"><span style=\"font-family:Calibri\"><span style=\"font-size:10.5000pt\"><span style=\"font-family:Calibri\">2.<span style=\"font-family:宋体\">在应用商店下载</span></span></span></span></span></p>\n";
+
+        if (editor.mode == 'wysiwyg') {
+
+            editor.insertHtml(value);
+        } else
+            alert('You must be in WYSIWYG mode!');
+    }
+	//
+    // function InsertText() {
+	//
+    //     var editor = CKEDITOR.instances.editor1;
+    //     var value = document.getElementById('txtArea').value;
+	//
+    //     if (editor.mode == 'wysiwyg') {
+    //         editor.insertText(value);
+    //     } else
+    //         alert('You must be in WYSIWYG mode!');
+    // }
+	//
+    // function SetContents() {
+    //     var editor = CKEDITOR.instances.editor1;
+    //     var value = document.getElementById('htmlArea').value;
+    //     editor.setData(value);
+    // }
+
+
+
+    // function ExecuteCommand(commandName) {
+    //     var editor = CKEDITOR.instances.editor1;
+	//
+    //     if (editor.mode == 'wysiwyg') {
+    //         editor.execCommand(commandName);
+    //     } else
+    //         alert('You must be in WYSIWYG mode!');
+    // }
+	//
+    // function CheckDirty() {
+    //     var editor = CKEDITOR.instances.editor1;
+    //     alert(editor.checkDirty());
+    // }
+	//
+    // function ResetDirty() {
+    //     var editor = CKEDITOR.instances.editor1;
+    //     editor.resetDirty();
+    //     alert('The "IsDirty" status was reset.');
+    // }
+	//
+    // function Focus() {
+    //     var editor = CKEDITOR.instances.editor1;
+    //     editor.focus();
+    // }
+</script>
+
+
+<script>
+
+    // CKEDITOR.on('instanceReady', function(ev) {
+    //     ShowMessage('编辑器实例<em>' + ev.editor.name + '</em> 已经加载.');
+	//
+    //     document.getElementById('eButtons').style.display = 'block';
+    // });
+
+
+	//
+    // editor.on('focus', function(evt) {
+    //     ShowMessage('编辑器实例 <em>' + this.name + '</em> <b>失去了焦点</b>.');
+    // });
+    // editor.on('blur', function(evt) {
+    //     ShowMessage('编辑器实例 <em>' + this.name + '</em> <b>lost focus</b>.');
+    // });
+	//
+	//
+    // var changesNum = 0;
+    // editor.on('change', function(evt) {
+    //     ShowMessage('编辑器中的更改数 <em>' + this.name + '</em>: <b>' + ++changesNum + '</b>.');
+    // });
+</script>
+
+
+</body>
+
+</html>

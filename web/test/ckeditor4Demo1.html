@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../plugin/ckeditor4full/ckeditor.js"></script>
+</head>
+<body>
+<div id="editor"></div>
+
+
+<button onclick="test();">6565</button>
+
+<input onclick="InsertHTML();" type="button" value="插入HTML">
+
+<script>
+
+     CKEDITOR.replace('editor', {
+        height: 300,width:700
+    });
+
+     var editor = CKEDITOR.instances.editor;
+
+    function test() {
+        alert(editor.getData());
+    }
+     function InsertHTML() {
+
+         var value ="<p><span style=\"font-size:10.5pt\"><span style=\"font-family:Calibri\"><span style=\"font-size:10.5000pt\"><span style=\"font-family:Calibri\">2.<span style=\"font-family:宋体\">在应用商店下载</span></span></span></span></span></p>\n";
+
+         if (editor.mode == 'wysiwyg') {
+
+             editor.insertHtml(value);
+         } else
+             alert('You must be in WYSIWYG mode!');
+     }
+
+</script>
+
+</body>
+</html>

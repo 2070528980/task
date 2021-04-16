@@ -62,7 +62,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">项目步骤</label>
                 <div class="layui-input-inline" style="width:800px">
-                    <textarea name="ueditorContent" id="ueditorContent"></textarea>
+                    <div id="editor"></div>
                 </div>
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
@@ -71,6 +71,7 @@
                 <div class="layui-input-block">
                     <button class="layui-btn" lay-filter="save" lay-submit="">保存</button>
                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    <button class="layui-btn" id="html" >HTML</button>
                 </div>
             </div>
         </form>
@@ -81,7 +82,7 @@
 <script>
 
 
-    layui.use(['tinymce', 'util', 'layer', 'form', 'rate', 'setting'], function () {
+    layui.use([ 'util', 'layer', 'form', 'rate', 'setting'], function () {
 
         var t = layui.tinymce
              ,rate = layui.rate
@@ -100,17 +101,13 @@
             , text: false //开启文本
         });
 
+        // instances.editor的editor为富文本id
+        // var editor = CKEDITOR.instances.editor;
         // 富文本
-        t.render({
-            elem: RichID
-            , height: 400
-            , images_upload_url: APIUrl+"/api/index/file/uploadApi"   //上传地址
-            , automatic_uploads: true   //加上了就不上传
-
-            // 其余配置可参考官方文档
-        }, function (opt) {
-            //加载完成后回调
+        CKEDITOR.replace('editor', {
+            height: 300,width:700
         });
+
 
 
         $(document).ready(function () {
@@ -123,6 +120,8 @@
 
             if (typeof(taskID) != "undefined") {
 
+
+
                 var load_index = layer.load(1);
                 $.ajax({
                     type: "GET",
@@ -130,6 +129,8 @@
                     data: {id: taskID},
                     dataType: "json",
                     success: function (data) {
+
+                        var editor = CKEDITOR.instances.editor;
                         // console.log(data);
                         if (data.data != null) {
                             setTimeout(function () {
@@ -138,7 +139,7 @@
                                 $("#projectIntroduce").val(data.data.projectIntroduce);
                                 $("#projectLabel").val(data.data.projectLabel);
                                 $("#amount").val(data.data.amount);
-                                t.get(RichID).insertContent(data.data.ueditorContent);
+                                editor.insertHtml(data.data.ueditorContent);
                                 $("#projectState").val(data.data.projectState);
                             }, 1000);
                         }
@@ -160,7 +161,9 @@
 
         form.on('submit(save)', function (data) {
 
-            var ueditorContent = t.get(RichID).getContent();
+
+            var editor = CKEDITOR.instances.editor;
+            var ueditorContent = editor.getData();
 
             // layer.alert(ueditorContent);
             // return false;
@@ -216,6 +219,13 @@
                 }
             });
 
+
+        });
+
+
+        $('#html').on('click', function () {
+            var ueditorContent = t.get(RichID).getContent();
+            console.log(ueditorContent);
 
         });
 
