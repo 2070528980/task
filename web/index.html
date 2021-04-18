@@ -94,6 +94,9 @@
                 , error() {
                     console.log("获取用户信息err");
                     layer.msg('请检查网络设置，再重试');
+                    setTimeout(function () {
+                        window.location.href = "login.html";
+                    }, 2000);
                 }
                 , complete: function () {
                     layer.close(load_index);

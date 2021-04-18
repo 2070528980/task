@@ -12,6 +12,7 @@
         </span>
     </div>
 
+
     <div class="douruimi-form edit-goods" style=" overflow-y: auto;height:700px;">
         <form class="layui-form" action="" onsubmit="return false">
 
@@ -46,7 +47,8 @@
             <div class="layui-inline">
                 <label class="layui-form-label">金额</label>
                 <div class="layui-input-inline">
-                    <input name="amount" id="amount" type="text" autocomplete="off" class="layui-input" value=""  placeholder="请输入金额" lay-verify="required">
+                    <input name="amount" id="amount" type="text" autocomplete="off" class="layui-input" value=""
+                           placeholder="请输入金额" lay-verify="required">
                 </div>
             </div>
 
@@ -62,16 +64,17 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">项目步骤</label>
                 <div class="layui-input-inline" style="width:800px">
-                    <div id="editor"></div>
+                    <div id="editorID"></div>
                 </div>
                 <div class="layui-form-mid layui-word-aux"></div>
             </div>
 
             <div class="layui-form-item">
                 <div class="layui-input-block">
+                    <button class="layui-btn" id="html">转换图片</button>
                     <button class="layui-btn" lay-filter="save" lay-submit="">保存</button>
                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-                    <button class="layui-btn" id="html" >HTML</button>
+
                 </div>
             </div>
         </form>
@@ -82,16 +85,18 @@
 <script>
 
 
-    layui.use([ 'util', 'layer', 'form', 'rate', 'setting'], function () {
+    layui.use(['util', 'layer', 'form', 'rate', 'setting'], function () {
 
         var t = layui.tinymce
-             ,rate = layui.rate
+            , rate = layui.rate
             , form = layui.form
-            ,setting = layui.setting
+            , setting = layui.setting
             , $ = layui.$;
 
 
+        var isimg = 0;
         var APIUrl = setting.api_url;
+        var imgUrl = setting.img_url;
         var RichID = "#ueditorContent";
 
         // 五星好评
@@ -104,10 +109,9 @@
         // instances.editor的editor为富文本id
         // var editor = CKEDITOR.instances.editor;
         // 富文本
-        CKEDITOR.replace('editor', {
-            height: 300,width:700
+        CKEDITOR.replace('editorID', {
+            height: 300, width: 700
         });
-
 
 
         $(document).ready(function () {
@@ -118,8 +122,7 @@
 
             // console.log("taskID:"+taskID);
 
-            if (typeof(taskID) != "undefined") {
-
+            if (typeof (taskID) != "undefined") {
 
 
                 var load_index = layer.load(1);
@@ -130,7 +133,7 @@
                     dataType: "json",
                     success: function (data) {
 
-                        var editor = CKEDITOR.instances.editor;
+                        var editor = CKEDITOR.instances.editorID;
                         // console.log(data);
                         if (data.data != null) {
                             setTimeout(function () {
@@ -161,8 +164,12 @@
 
         form.on('submit(save)', function (data) {
 
+            if (isimg == 0) {
+                layer.msg("请先点击转换图片！");
+                return false;
+            }
 
-            var editor = CKEDITOR.instances.editor;
+            var editor = CKEDITOR.instances.editorID;
             var ueditorContent = editor.getData();
 
             // layer.alert(ueditorContent);
@@ -187,6 +194,7 @@
 
 
             var load_index = layer.load(1);
+
             $.ajax({
                 type: "POST",
                 url: APIUrl + "/api/index/task/save",
@@ -200,14 +208,12 @@
 
                         // console.log(data);
                         layer.msg('保存成功');
-                        setTimeout(function () {
-                            window.location.href = "#/task/ListTask";
-                        }, 2000);
+                        window.location.href = "#/task/ListTask";
                     } else {
                         layer.msg(data.msg);
                         setTimeout(function () {
                             // window.location.href = "/taskPlatform-web/web/login.html";
-                        }, 2000);
+                        }, 5000);
                     }
                 }
                 , error() {
@@ -224,10 +230,78 @@
 
 
         $('#html').on('click', function () {
-            var ueditorContent = t.get(RichID).getContent();
-            console.log(ueditorContent);
+            // var editor = CKEDITOR.instances.editorID;
+            // var ueditorContent = editor.getData();
+            // console.log(ueditorContent);
 
+            replaceImg();
+
+            // console.log(a);
         });
+
+
+        //把富文本里的base64上传到minio并转成地址
+        function replaceImg() {
+
+            console.log("把富文本里的base64上传到minio并转成地址");
+
+            var eachcount = 0;
+            var a = $(".cke_wysiwyg_frame").contents().find("img");
+            // console.log("a:"+a.length);
+
+            isimg = 1;
+
+            if (a.length > 0) {
+                a.each(function (i, btn) {
+                    // var file = dataURLtoFile($(this).attr("src"));
+                    var _this = $(this);
+                    var formData = new FormData();
+
+                    if (_this.attr("src").length > 200) {
+                        formData.append("edit", dataURLtoFile(_this.attr("src"), 'img' + i + ".jpg"));
+                        var load_index = layer.load(1);
+                        $.ajax({
+                            type: "POST",
+                            url: APIUrl + "/api/index/file/uploadApi",
+                            data: formData,
+                            processData: false,// 告诉jQuery不要去处理发送的数据
+                            contentType: false,// 告诉jQuery不要去设置Content-Type请求头
+                            success: function (data) {
+                                _this.attr("src", imgUrl + data.data.src);
+                                _this.attr("data-cke-saved-src", imgUrl + data.data.src);
+                            }
+                            , error() {
+                                console.log("task保存err");
+                                layer.msg('请检查网络设置，再重试');
+                            }
+                            , complete: function () {
+                                layer.close(load_index);
+
+                            }
+                        });
+                    }
+                    // console.log($(this).attr("class"))
+                });
+            }
+            layer.msg('转换成功！');
+        }
+
+
+        // 将base64转file
+        function dataURLtoFile(dataurl, filename) {
+            var arr = dataurl.split(',');
+            var mime = arr[0].match(/:(.*?);/)[1];
+            var bstr = atob(arr[1]);
+            var n = bstr.length;
+            var u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            //转换成file对象
+            return new File([u8arr], filename, {type: mime});
+            //转换成成blob对象
+            //return new Blob([u8arr],{type:mime});
+        }
 
 
     });
