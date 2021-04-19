@@ -3,10 +3,49 @@
     <meta charset="UTF-8">
     <title>12任务平台</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate"/>
+    <meta http-equiv="expires" content="0"/>
 
     <link rel="stylesheet" href="../plugin/sui-mobile/dist/css/sm.min.css">
     <link rel="stylesheet" href="../plugin/sui-mobile/dist/css/sm-extend.min.css">
 
+    <style type="text/css">
+        .weui-gallery {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: #000;
+            z-index: 1000
+        }
+
+        .weui-gallery__img {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 60px;
+            left: 0;
+            background: 50% no-repeat;
+            background-size: contain
+        }
+
+
+        .weui-gallery__opr {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: #0d0d0d;
+            color: #fff;
+            line-height: 60px;
+            text-align: center
+        }
+
+
+    </style>
 
 </head>
 
@@ -25,70 +64,128 @@
     </header>
 </div>
 
-<div class="row" style="margin: 50px auto;text-align: center;" id="nullText">
-    <div style="font-size: 30px;" id="projectName">
+<div id="contentALL" style=" width: 95%;margin: 0 auto; overflow-y: auto;">
+
+
+    <div class="row" style="margin: 50px  auto 10px auto;text-align: center;" id="nullText">
+        <div style="font-size: 30px;" id="projectName">
+
+        </div>
+        <span style="color: red;" id="amount"></span>元
+    </div>
+
+
+    <div id="content">
 
     </div>
-    <span style="color: red;" id="amount"></span>元
+
 </div>
 
-
-<div id="content" style=" width: 95%;margin: 0 auto; overflow-y: auto;">
-
+<!--放大图片-->
+<div class="weui-gallery" style="display: none">
+    <span class="weui-gallery__img"></span>
+    <div class="weui-gallery__opr">
+    </div>
 </div>
 
 
 <script src="../plugin/jquery/jquery-3.2.1.js"></script>
 <script src="../plugin/sui-mobile/dist/js/sm.js"></script>
-<script src="js/setting.js"></script>
+<script src="js/setting.js?"></script>
 <script>
 
-    (function () {
 
-        var APIUrl = getAPIUrl();
+    var APIUrl = getAPIUrl();
 
-        $(document).ready(function () {
+    $(document).ready(function () {
+        var bodyH = $("body").outerHeight(true);
+        var headHeight = $("#header").outerHeight(true);
 
-            var bodyH = $("body").outerHeight(true);
-            var headHeight = $("#header").outerHeight(true);
-            $("#content").height(bodyH - headHeight);
+        $("#contentALL").height(bodyH - headHeight);
 
-            var param = location.hash;
-            param = param.toString().replace("#", "");
-            param = param.slice(4);
-            console.log(param);
+        var param = location.hash;
+        param = param.toString().replace("#", "");
+        param = param.slice(4);
+        // console.log(param);
 
-            $.showIndicator();
-            $.ajax({
-                type: "GET",
-                url: APIUrl + "/api/H5/taskByID",
-                data: {id: param},
-                dataType: "json",
-                success: function (data) {
-                    console.log(data);
+        $.showIndicator();
+        $.ajax({
+            type: "GET",
+            url: APIUrl + "/api/H5/taskByID",
+            data: {id: param},
+            dataType: "json",
+            success: function (data) {
+                // console.log(data);
 
-                    if (data.data == null) {
-                        // console.log("66666666666");
-                        $("#nullText").empty();
-                        $("#nullText").append("该任务不存在");
+                if (data.data == null) {
+                    // console.log("66666666666");
+                    $("#nullText").empty();
+                    $("#nullText").append("该任务不存在");
 
-                    } else {
-                        $("#projectName").append(data.data.projectName);
-                        $("#amount").append(data.data.amount);
-                        $("#content").append(data.data.ueditorContent);
-                    }
+                } else {
+                    $("#projectName").append(data.data.projectName);
+                    $("#amount").append(data.data.amount);
+                    $("#content").append(data.data.ueditorContent);
                 }
-                , error() {
-                    console.log("获取taskByID信息err");
-                    // layer.msg('请检查网络设置，再重试');
-                    $.toast("请检查网络设置，再重试", "text");
-                }
-                , complete: function () {
-                        $.hideIndicator();
-                }
-            });
+            }
+            , error() {
+                console.log("获取taskByID信息err");
+                // layer.msg('请检查网络设置，再重试');
+                $.toast("请检查网络设置，再重试", "text");
+            }
+            , complete: function () {
+                show_picture();
+                $.hideIndicator();
+            }
         });
-    })();
+    });
+
+
+    // 图片懒加载
+    function show_picture() {
+
+        var imgs = document.querySelectorAll('img');
+        for (var i = 0; i < imgs.length; i++) {
+            // imgs[i].src = imgs[i].getAttribute('data-src');
+            // 不加立即执行函数i会等于9
+            // 立即执行函数 如果不使用，i的参数传不下去，imgs[i].getAttribute要报错
+            (function (i) {
+                setTimeout(function () {
+                    var temp = new Image();
+                    var src2 = imgs[i].getAttribute('data-src');
+                    // console.log(src2);
+                    // 判断是否有值，有值就加载到内存，没值就直接给图片赋值
+                    if (!isEmpty(src2)) {
+                        temp.src = src2;
+                        temp.onload = function () {
+                            // 获取父级自定义属性url，用真图片替换假图片
+                            // imgs[i].setAttribute(src2);
+                            imgs[i].src = temp.src;
+                        }
+                    }
+                }, 1000)
+            })(i)
+
+
+        }
+    }
+
+    // 放大图片
+    $(document).on("click", "img", function () {
+        if (this.src != "") {
+            console.log("进来了");
+            $(".weui-gallery__img").attr("style", "background-image:url(" + this.src + ")");
+            $(".weui-gallery").fadeIn(100);
+        }else {
+            console.log("空");
+        }
+    });
+
+    // 关闭放大图片
+    $(".weui-gallery").on("click", function () {
+        $(".weui-gallery").fadeOut(100);
+    });
+
 
 </script>
 

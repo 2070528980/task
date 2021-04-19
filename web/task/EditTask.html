@@ -37,17 +37,24 @@
 
             <div class="layui-form-item">
                 <label class="layui-form-label">项目标签</label>
-                <div class="layui-input-inline">
-                    <input type="text" maxlength="50" lay-verify="required" autocomplete="off" placeholder=""
-                           class="layui-input" name="projectLabel" id="projectLabel">
+                <div class="layui-input-block" style="width: 600px;" id="projectLabel">
+
                 </div>
-                <div class="layui-form-mid layui-word-aux"></div>
             </div>
+
+            <!--<div class="layui-form-item">-->
+            <!--<label class="layui-form-label">项目标签</label>-->
+            <!--<div class="layui-input-inline">-->
+            <!--<input type="text" maxlength="50" lay-verify="required" autocomplete="off" placeholder=""-->
+            <!--class="layui-input" name="projectLabel" id="projectLabel">-->
+            <!--</div>-->
+            <!--<div class="layui-form-mid layui-word-aux"></div>-->
+            <!--</div>-->
 
             <div class="layui-inline">
                 <label class="layui-form-label">金额</label>
                 <div class="layui-input-inline">
-                    <input name="amount" id="amount" type="text" autocomplete="off" class="layui-input" value=""
+                    <input name="amount" id="amount" type="number" autocomplete="off" class="layui-input" value=""
                            placeholder="请输入金额" lay-verify="required">
                 </div>
             </div>
@@ -85,19 +92,20 @@
 <script>
 
 
-    layui.use(['util', 'layer', 'form', 'rate', 'setting'], function () {
+    layui.use(['util', 'layer', 'form', 'rate', 'setting','selectN', 'selectM'], function () {
 
-        var t = layui.tinymce
-            , rate = layui.rate
+        var rate = layui.rate
             , form = layui.form
             , setting = layui.setting
-            , $ = layui.$;
+            , $ = layui.$
+            , selectM = layui.selectM;
 
+        // 多选
+        var tagIns2;
 
         var isimg = 0;
         var APIUrl = setting.api_url;
         var imgUrl = setting.img_url;
-        var RichID = "#ueditorContent";
 
         // 五星好评
         rate.render({
@@ -122,9 +130,8 @@
 
             // console.log("taskID:"+taskID);
 
-            if (typeof (taskID) != "undefined") {
-
-
+            if (taskID!=null) {
+                // console.log("进来了");
                 var load_index = layer.load(1);
                 $.ajax({
                     type: "GET",
@@ -132,7 +139,6 @@
                     data: {id: taskID},
                     dataType: "json",
                     success: function (data) {
-
                         var editor = CKEDITOR.instances.editorID;
                         // console.log(data);
                         if (data.data != null) {
@@ -140,11 +146,16 @@
                                 $("#id").val(data.data.id);
                                 $("#projectName").val(data.data.projectName);
                                 $("#projectIntroduce").val(data.data.projectIntroduce);
-                                $("#projectLabel").val(data.data.projectLabel);
+                                // $("#projectLabel").val(data.data.projectLabel);
+                                if(data.data.projectLabelID!=null){
+                                    getLabel(data.data.projectLabelID.split(","));
+                                }else {
+                                    getLabel();
+                                }
                                 $("#amount").val(data.data.amount);
                                 editor.insertHtml(data.data.ueditorContent);
                                 $("#projectState").val(data.data.projectState);
-                            }, 1000);
+                            }, 500);
                         }
                     }
                     , error() {
@@ -157,12 +168,16 @@
                 });
 
             }
+            else{
+                getLabel();
+            }
 
         });
         // console.log(getAPIUrl());
 
-
         form.on('submit(save)', function (data) {
+            // console.log(tagIns2.names.toString());
+            // console.log(tagIns2.values.toString());
 
             if (isimg == 0) {
                 layer.msg("请先点击转换图片！");
@@ -171,6 +186,9 @@
 
             var editor = CKEDITOR.instances.editorID;
             var ueditorContent = editor.getData();
+
+            // console.log(ueditorContent);
+            // return;
 
             // layer.alert(ueditorContent);
             // return false;
@@ -187,11 +205,11 @@
 
             formJson.ueditorContent = ueditorContent;
             formJson.recommendedIndex = recommendedIndex;
+            formJson.projectLabel=tagIns2.names.toString();
+            formJson.projectLabelID=tagIns2.values.toString();
 
             // console.log(JSON.stringify(formJson));
-
             // console.log(APIUrl + "api/index/task/save?jsonStr="+JSON.stringify(formJson));
-
 
             var load_index = layer.load(1);
 
@@ -243,12 +261,10 @@
         //把富文本里的base64上传到minio并转成地址
         function replaceImg() {
 
-            console.log("把富文本里的base64上传到minio并转成地址");
+            // console.log("把富文本里的base64上传到minio并转成地址");
 
-            var eachcount = 0;
             var a = $(".cke_wysiwyg_frame").contents().find("img");
             // console.log("a:"+a.length);
-
             isimg = 1;
 
             if (a.length > 0) {
@@ -267,14 +283,16 @@
                             processData: false,// 告诉jQuery不要去处理发送的数据
                             contentType: false,// 告诉jQuery不要去设置Content-Type请求头
                             success: function (data) {
-                                _this.attr("src", imgUrl + data.data.src);
-                                _this.attr("data-cke-saved-src", imgUrl + data.data.src);
+                                _this.attr("src", imgUrl+"/task/images/loading.png");
+                                _this.attr("data-cke-saved-src",imgUrl+"/task/images/loading.png");
+                                _this.attr("data-src", imgUrl + data.data.src);
                             }
                             , error() {
                                 console.log("task保存err");
                                 layer.msg('请检查网络设置，再重试');
                             }
                             , complete: function () {
+
                                 layer.close(load_index);
 
                             }
@@ -282,8 +300,12 @@
                     }
                     // console.log($(this).attr("class"))
                 });
+
+                layer.msg('转换成功！');
+            }else{
+                layer.msg('转换成功！');
             }
-            layer.msg('转换成功！');
+
         }
 
 
@@ -301,6 +323,47 @@
             return new File([u8arr], filename, {type: mime});
             //转换成成blob对象
             //return new Blob([u8arr],{type:mime});
+        }
+
+
+        // 获取标签
+        function getLabel(selected) {
+
+            $.ajax({
+                type: "GET",
+                url: APIUrl + "/api/index/label/list",
+                data: {},
+                dataType: "json",
+                success: function (data) {
+                    // console.log(data);
+                    if (data.data != null) {
+                        tagIns2= selectM({
+                            //元素容器【必填】
+                            elem: '#projectLabel'
+                            //候选数据【必填】
+                            , data: data.data
+                            //默认值
+                            , selected: selected
+                            //最多选中个数，默认5
+                            , max: 6
+                            //input的name 不设置与选择器相同(去#.)
+                            , name: 'tag2'
+                            //值的分隔符
+                            , delimiter: ','
+                            //候选项数据的键名
+                            , field: {idName: 'id', titleName: 'name'}
+                        });
+
+                    }
+                }
+                , error() {
+                    console.log("获取标签信息err");
+                    layer.msg('请检查网络设置，再重试');
+                }
+                , complete: function () {
+                    // layer.close(load_index);
+                }
+            });
         }
 
 

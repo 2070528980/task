@@ -24,7 +24,7 @@
         <!--上方导航栏-->
         <ul class="layui-nav layui-layout-left" id="topMenus">
             <li class="layui-nav-item"><a href="#/task/ListTask">任务管理</a></li>
-            <li class="layui-nav-item"><a href="#/role">角色管理</a></li>
+            <li class="layui-nav-item"><a href="#/label/ListLabel">标签管理</a></li>
             <li class="layui-nav-item"><a href="#/setUp">基本设置</a></li>
         </ul>
         <ul class="layui-nav layui-layout-right">
@@ -62,10 +62,13 @@
     layui.config({
         base: 'js/',
         version: Date.parse(new Date())
+    }).extend({
+        selectN: '../../plugin/layui-select/selectN',
+        selectM: '../../plugin/layui-select/selectM',
     }).use(['layer','setting','app'], function () {
-        var $ = layui.$;
-        var setting = layui.setting;
-        var APIUrl = setting.api_url;
+        var $ = layui.$, setting = layui.setting;
+        var APIUrl = setting.api_url , selectM = layui.selectM;
+
 
         $(document).ready(function () {
 
@@ -82,13 +85,11 @@
                 success: function (data) {
                     // console.log(data);
                     if(data.code=="0"){
-
                         layer.msg(data.msg);
                         setTimeout(function () {
                             window.location.href = "login.html";
                         }, 2000);
                     }else {
-
                     }
                 }
                 , error() {
@@ -100,13 +101,11 @@
                 }
                 , complete: function () {
                     layer.close(load_index);
-
                 }
             });
         });
 
         window.logout = function(){
-
             var load_index = layer.load(1);
             $.ajax({
                 type: "GET",
