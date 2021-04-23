@@ -1,7 +1,7 @@
 // 公共配置
 
-// var apiUrl = "http://94.191.115.200";
-var apiUrl = "http://127.0.0.1";
+var apiUrl = "http://94.191.115.200";
+// var apiUrl = "http://127.0.0.1";
 var pro = window.location.protocol;
 
 function  getAPIUrl() {

@@ -21,14 +21,26 @@
 
             <form class="layui-form ng-pristine ng-valid" style="float: right">
                 <div class="layui-inline">
+
+
                     <div class="layui-inline">
+                        <label class="layui-form-label">状态</label>
                         <div class="layui-input-inline">
-                            <input class="layui-input" name="userName" id="userName" autocomplete="off"
-                                   placeholder="请输入关键字">
+                            <select name="ProjectState" id="ProjectState">
+                                <option value="">--全部--</option>
+                                <option value="1" selected>上架</option>
+                                <option value="0">下架</option>
+                            </select>
                         </div>
                     </div>
 
-                    <a class="layui-btn" ng-click="search()">查 询</a>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input class="layui-input" name="keyword" id="keyword" autocomplete="off"
+                                   placeholder="请输入关键字">
+                        </div>
+                    </div>
+                    <a class="layui-btn" id="searchBt">查 询</a>
                 </div>
             </form>
         </div>
@@ -38,8 +50,9 @@
     <table class="layui-hide" id="test" lay-filter="test"></table>
 
 
-    <a class="layui-btn" id="bt_export" style="display: inline-block;">导入</a>
+    <!--<a class="layui-btn" id="bt_export" style="display: inline-block;">导入</a>-->
 
+    <a class="layui-btn" id="bt_update" style="display: inline-block;">批量刷新</a>
     <a class="layui-btn" id="bt_upper" style="display: inline-block;">批量上架</a>
     <a class="layui-btn" id="bt_lower" style="display: inline-block;">批量下架</a>
 
@@ -54,11 +67,11 @@
 
 <script>
 
-    layui.use(['table','setting'], function () {
+    layui.use(['table', 'setting'], function () {
 
         var table = layui.table
             , $ = layui.$
-             ,setting = layui.setting;
+            , setting = layui.setting;
         var APIUrl = setting.api_url;
 
         //监听工具条  test为加载的table的elem
@@ -75,15 +88,13 @@
             else if (obj.event === 'bt_edit') {
 
                 // console.log("edit/"+id);
-                localStorage.setItem("id",id);
+                localStorage.setItem("id", id);
                 window.location.href = "#/task/EditTask";
-
 
                 // console.log("编辑");
             }
             // 删除
             else if (obj.event === 'bt_del') {
-
 
                 layer.open({
                     title: '警告'
@@ -119,11 +130,7 @@
                         // 取消按钮
                     }
                 });
-
-
             }
-
-
         });
 
 
@@ -144,25 +151,32 @@
                 , {field: 'id', title: '内码', type: 'numbers', hide: true}
                 , {field: 'projectName', title: '项目名称', width: 150}
                 , {field: 'amount', title: '金额', width: 60}
-                , {field: 'projectLabel', title: '项目标签', width: 100}
+                , {field: 'projectLabel', title: '项目标签', width: 120}
                 , {field: 'projectIntroduce', title: '项目简介', width: 200}
                 , {field: 'recommendedIndex', title: '推荐指数', width: 100}
-                , {field: 'projectState', title: '状态', width: 60}
+                , {field: 'projectState', title: '状态', width: 60,templet:function (data) {
+                        return data.projectState == 1?"上架":"下架";
+                    }}
                 , {field: 'createDate', title: '创建日期', width: 200}
                 , {field: 'updateDate', title: '更新日期', width: 200}
-                , {field: 'note', title: '备注', width: 170}
+                , {field: 'note', title: '备注', width: 50}
                 , {fixed: 'right', title: '操作', width: 200, toolbar: '#barDemo'}
             ]]
             , page: true
+            ,where: { //设定异步数据接口的额外参数，任意设
+                ProjectState:1
+            }
         });
 
         //搜索按钮单击事件
-        $('.layui-form-item .layui-btn').on('click', function () {
+        $('#searchBt').on('click', function () {
 
-            var userName = $('#userName').val();
+            var keyword = $('#keyword').val();
+            var ProjectState = $('#ProjectState').val();
             tableIns.reload({
                 where: { //设定异步数据接口的额外参数，任意设
-                    // userName: userName
+                    keyword: keyword
+                    ,ProjectState:ProjectState
                 }
                 , page: {
                     curr: 1 //重新从第 1 页开始
@@ -170,6 +184,119 @@
             });
 
         });
+
+        // 批量更新
+        $('#bt_update').on('click', function () {
+            var checkStatus = layui.table.checkStatus('testReload').data;
+            var ids = [];
+
+            $(checkStatus).each(function (i, o) {//o即为表格中一行的数据
+                ids.push(o.id);
+            });
+            if (ids.length < 1) {
+                layer.msg('无选中项');
+                return false;
+            } else {
+                    var idStr = ids.join(",");
+                    $.ajax({
+                        type: "POST",
+                        url: APIUrl + '/api/index/task/batchUpdateDate  ',
+                        data: {
+                            "idStr": idStr
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            console.log(data);
+                            if (data.code = "000") {
+                                layer.msg('操作成功');
+                                tableIns.reload({});
+                            } else {
+                                layer.msg('操作失败');
+                            }
+                        }, error() {
+                            layer.msg('error');
+                        }
+                    });
+            }
+
+        });
+
+
+        // 批量上架
+        $('#bt_upper').on('click', function () {
+            var checkStatus = layui.table.checkStatus('testReload').data;
+            var ids = [];
+
+            $(checkStatus).each(function (i, o) {//o即为表格中一行的数据
+                ids.push(o.id);
+            });
+            if (ids.length < 1) {
+                layer.msg('无选中项');
+                return false;
+            } else {
+                var idStr = ids.join(",");
+                $.ajax({
+                    type: "POST",
+                    url: APIUrl + '/api/index/task/batchUpdateState  ',
+                    data: {
+                        "idStr": idStr
+                        ,"ProjectState":1
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        if (data.code = "000") {
+                            layer.msg('操作成功');
+                            tableIns.reload({});
+                        } else {
+                            layer.msg('操作失败');
+                        }
+                    }, error() {
+                        layer.msg('error');
+                    }
+                });
+            }
+
+        });
+
+        //批量下架
+        $('#bt_lower').on('click', function () {
+            var checkStatus = layui.table.checkStatus('testReload').data;
+            var ids = [];
+
+            $(checkStatus).each(function (i, o) {//o即为表格中一行的数据
+                ids.push(o.id);
+            });
+            if (ids.length < 1) {
+                layer.msg('无选中项');
+                return false;
+            } else {
+                var idStr = ids.join(",");
+                $.ajax({
+                    type: "POST",
+                    url: APIUrl + '/api/index/task/batchUpdateState  ',
+                    data: {
+                        "idStr": idStr
+                        ,'ProjectState':0
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        if (data.code = "000") {
+                            layer.msg('操作成功');
+                            tableIns.reload({});
+                        } else {
+                            layer.msg('操作失败');
+                        }
+                    }, error() {
+                        layer.msg('error');
+                    }
+                });
+            }
+
+        });
+
+
 
     });
 
