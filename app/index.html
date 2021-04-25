@@ -63,10 +63,16 @@
         </div>
 
         <div class="content" style="margin-top: 60px;">
-            <div class="list-block media-list" style="margin-top: 0">
+            <div class="list-block media-list" style="margin-top: 0;margin-bottom: 10px;">
                 <ul id="content">
                 </ul>
             </div>
+
+            <div id="more">
+
+            </div>
+
+
         </div>
     </div>
 
@@ -81,15 +87,12 @@
         <div class="content-block-title">快捷筛选：</div>
         <div class="row" id="quick">
 
-
         </div>
 
         <p class="buttons-row">
             <a href="javascript:" class="button button-round active close-panel" id="confirmBt">确认</a>
             <a href="javascript:" class="button button-round close-panel ">关闭</a>
         </p>
-
-
     </div>
 </div>
 
@@ -100,9 +103,9 @@
 <script src="js/setting.js"></script>
 <script>
 
-    (function () {
-
         var APIUrl = getAPIUrl();
+        var pageNum = 1;
+        var pageSize = 8;
 
         $(document).ready(function () {
 
@@ -110,12 +113,14 @@
 
             $.showIndicator();
 
+            // 加载标签
             $.ajax({
                 type: "GET",
                 url: APIUrl + "/api/H5/labelListAll",
                 data: {keyword: ""},
                 dataType: "json",
                 success: function (data) {
+                    // console.log(data);
                     var html = "";
                     $("#content").empty();
                     $.each(data.data, function (index, n) {
@@ -135,21 +140,23 @@
 
         // 查询
         $(document).on("click", "#search_bt", function () {
+            pageNum = 1;
             var search = $("#search").val();
             // console.log(search);
+            $("#content").empty();
             loadList(search,"");
         });
 
 
         // 筛选
         $(document).on("click", "#confirmBt", function () {
-
+            pageNum = 1;
             var select = $(".select").attr("data-name");
             var search = $("#search").val();
-            console.log(select);
+            // console.log(select);
+            $("#content").empty();
             loadList(search,select);
         });
-
 
         // 快捷筛选里选中变色
         $(document).on("click", ".bt", function () {
@@ -162,8 +169,25 @@
         });
 
 
+        $(document).on("click", "#getMore", function () {
+
+            var select = $(".select").attr("data-name");
+            var search = $("#search").val();
+            // console.log(select);
+            // console.log(search);
+            loadList(search,select);
+
+        });
+
+
         // 加载列表
         function loadList(keyword,select) {
+            var moreHtml="<div class=\"content-block-title\"   style=\"margin-top:20px;margin-bottom: 30px;color: #0a8ddf;\" id=\"getMore\">查看更多</div>";
+            $("#more").empty();
+
+            if(!select){
+                select="";
+            }
 
             $.showIndicator();
             $.ajax({
@@ -171,12 +195,19 @@
                 url: APIUrl + "/api/H5/taskListAll",
                 data: {keyword: keyword
                     ,select:select
+                    ,pageNum:pageNum
+                    ,pageSize:pageSize
                 },
                 dataType: "json",
                 success: function (data) {
 
+                    console.log(data);
+                    if(data.data.length!=0){
+                        pageNum++;
+                        $("#more").append(moreHtml);
+                    }
+
                     var html = "";
-                    $("#content").empty();
                     $.each(data.data, function (index, n) {
                         html = " <li>\n" +
                             "                        <a href=\"Details.html#" + getRand(1000, 9999) + n.id + "\" class=\"item-link item-content\">\n" +
@@ -191,6 +222,7 @@
                             "                        </a>\n" +
                             "                    </li>";
                         $("#content").append(html);
+
                     });
                 }
                 , error() {
@@ -202,8 +234,6 @@
                 }
             });
         }
-
-    })()
 
 
 </script>
