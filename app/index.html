@@ -140,6 +140,10 @@
 
         // 查询
         $(document).on("click", "#search_bt", function () {
+            $(".bt").each(function(i, btn) {
+                // console.log($(this).attr("data-name"));
+                $(this).removeClass("select");
+            });
             pageNum = 1;
             var search = $("#search").val();
             // console.log(search);
