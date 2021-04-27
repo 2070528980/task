@@ -266,14 +266,15 @@
             var a = $(".cke_wysiwyg_frame").contents().find("img");
             // console.log("a:"+a.length);
             isimg = 1;
+                if (a.length > 0) {
 
-            if (a.length > 0) {
                 a.each(function (i, btn) {
                     // var file = dataURLtoFile($(this).attr("src"));
                     var _this = $(this);
                     var formData = new FormData();
 
                     if (_this.attr("src").length > 200) {
+                        // console.log("进来了");
                         formData.append("edit", dataURLtoFile(_this.attr("src"), 'img' + i + ".jpg"));
                         var load_index = layer.load(1);
                         $.ajax({
@@ -283,29 +284,28 @@
                             processData: false,// 告诉jQuery不要去处理发送的数据
                             contentType: false,// 告诉jQuery不要去设置Content-Type请求头
                             success: function (data) {
-                                _this.attr("src", imgUrl+"/task/images/loading.png");
-                                _this.attr("data-cke-saved-src",imgUrl+"/task/images/loading.png");
-                                _this.attr("data-src", imgUrl + data.data.src);
+                                _this.attr("src", imgUrl + data.data.src);
+                                _this.attr("data-cke-saved-src",imgUrl + data.data.src);
+                                // _this.attr("data-src", imgUrl + data.data.src);
                             }
                             , error() {
                                 console.log("task保存err");
                                 layer.msg('请检查网络设置，再重试');
                             }
                             , complete: function () {
-
                                 layer.close(load_index);
-
                             }
                         });
                     }
                     // console.log($(this).attr("class"))
+                    if(i+1==a.length){
+                        console.log(i);
+                        layer.msg('转换成功！');
+                    }
                 });
-
-                layer.msg('转换成功！');
             }else{
                 layer.msg('转换成功！');
             }
-
         }
 
 
